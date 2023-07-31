@@ -3,12 +3,14 @@ const path = require('path');
 
 // Получить путь к создаваемой папке из аргумента командной строки
 const targetPath = process.argv[2];
-let componentName = process.argv[3];
+let componentName = process.argv.slice(3);
 
 if (!componentName) throw new Error(`Неверное название компонента ${componentName}`);
 if (!targetPath) throw new Error(`Неверный путь ${targetPath}`);
 
-componentName = componentName[0].toUpperCase() + componentName.slice(1);
+componentName = componentName
+  .map((part) => part[0].toUpperCase() + part.slice(1))
+  .join('');
 const dir = `${targetPath}/${componentName}`;
 
 // Если путь есть

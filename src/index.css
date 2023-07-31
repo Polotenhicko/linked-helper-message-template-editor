@@ -13,6 +13,12 @@ body {
   font-weight: 400;
 }
 
+ul,
+ol,
+li {
+  list-style: none;
+}
+
 #root {
   min-width: 100vw;
   min-height: 100vh;
