@@ -2,7 +2,7 @@ type TModifiers = {
   [key: string]: boolean;
 };
 
-type TStrings = string[];
+type TStrings = (string | undefined | null)[];
 
 export function cn(modifiers: TModifiers): string;
 export function cn(strings: TStrings): string;

@@ -8,7 +8,7 @@ interface IButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({ children, className, ...other }: IButtonProps) {
-  const classNames = cn(styles.button, className ? className : '');
+  const classNames = cn(styles.button, className);
   return (
     <button className={classNames} {...other}>
       {children}

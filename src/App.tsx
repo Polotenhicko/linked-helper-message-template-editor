@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MessageEditor } from './components/MessageEditor';
 import { Button } from './controls/Button';
 import { TArrVarNames } from './components/VarNameList/VarNameList';
+import localStorageService from './services/localStorage.service';
 
 const arrVarNames: TArrVarNames = ['firstname', 'lastname', 'company', 'position'];
 

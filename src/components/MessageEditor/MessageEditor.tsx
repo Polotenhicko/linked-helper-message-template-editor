@@ -1,11 +1,10 @@
+import { TextArea } from '../../controls/TextArea';
 import { ButtonAddConditionChain } from '../ButtonAddConditionChain';
-import { FinalMessage } from '../FinalMessage';
 import { Modal } from '../Modal';
-import { StartMessage } from '../StartMessage';
 import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
-import styles from './MessageEditor.module.css';
 import { useEffect, useRef } from 'react';
+import styles from './MessageEditor.module.css';
 
 interface IMessageEditorProps {
   onClose: () => void;
@@ -67,8 +66,8 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
           <ButtonAddConditionChain />
-          <StartMessage onFocusInput={setLastFocusedInput} />
-          <FinalMessage onFocusInput={setLastFocusedInput} />
+          <TextArea onFocusInput={setLastFocusedInput} />
+          <TextArea onFocusInput={setLastFocusedInput} />
         </div>
       </div>
     </Modal>
