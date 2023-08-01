@@ -1,4 +1,7 @@
+import { ButtonAddConditionChain } from '../ButtonAddConditionChain';
+import { FinalMessage } from '../FinalMessage';
 import { Modal } from '../Modal';
+import { StartMessage } from '../StartMessage';
 import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
 import styles from './MessageEditor.module.css';
@@ -24,11 +27,20 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
     }
   };
 
+  const handleKeydownEscape = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  };
+
   useEffect(() => {
     // Блокируем скролл во время показа модалки
     document.body.style.overflow = 'hidden';
+    // Закрываем модалку на Esc
+    document.body.addEventListener('keydown', handleKeydownEscape);
     return () => {
       document.body.style.overflow = 'auto';
+      document.body.removeEventListener('keydown', handleKeydownEscape);
     };
   }, []);
 
@@ -38,6 +50,9 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} />
+          <ButtonAddConditionChain />
+          <StartMessage />
+          <FinalMessage />
         </div>
       </div>
     </Modal>

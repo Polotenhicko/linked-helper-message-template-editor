@@ -1,0 +1,14 @@
+.button {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+  background-image: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
+  color: #333;
+  border: 1px solid #9ac0d4;
+  border-radius: 13px;
+  margin-right: auto;
+}
+
+.title {
+  font-weight: 700;
+}

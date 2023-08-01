@@ -1,0 +1,13 @@
+.textarea {
+  resize: none;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  padding: 4px;
+  padding-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #999a9e;
+  background: #fff;
+  overflow-y: hidden;
+}

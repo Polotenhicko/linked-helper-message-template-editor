@@ -1,0 +1,1 @@
+export { ConditionalWordsDecorator } from './ConditionalWordsDecorator'
