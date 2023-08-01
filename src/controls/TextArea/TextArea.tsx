@@ -1,12 +1,14 @@
 import { useRef, useState } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './TextArea.module.css';
+import { TSetLastFocusedInput } from '../../components/MessageEditor/MessageEditor';
 
-interface ITextAreaProps {
+interface ITextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
   className?: string;
+  onFocusInput?: TSetLastFocusedInput;
 }
 
-export function TextArea({ className }: ITextAreaProps) {
+export function TextArea({ className, onFocusInput }: ITextAreaProps) {
   const classNames = cn(styles.textarea, className ? className : '');
   const [minHeight, setMinHeight] = useState(0);
 
@@ -35,7 +37,19 @@ export function TextArea({ className }: ITextAreaProps) {
     }
   };
 
+  const handleOnFocus = () => {
+    if (!onFocusInput) return;
+    if (!textAreaRef.current) return;
+
+    onFocusInput(textAreaRef.current);
+  };
+
   return (
-    <textarea className={classNames} onInput={autoResize} ref={textAreaRef}></textarea>
+    <textarea
+      className={classNames}
+      onInput={autoResize}
+      ref={textAreaRef}
+      onFocus={handleOnFocus}
+    ></textarea>
   );
 }

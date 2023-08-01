@@ -12,8 +12,17 @@ interface IMessageEditorProps {
   arrVarNames: TArrVarNames;
 }
 
+export type TOnClickVarName = (varName: string) => void;
+
+export type TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => void;
+
 export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
   const messageEditorRef = useRef<HTMLDivElement | null>(null);
+  const lastFocusedInput = useRef<HTMLTextAreaElement | null>(null);
+
+  const setLastFocusedInput: TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => {
+    lastFocusedInput.current = ref;
+  };
 
   const handleClickOutsideModal = (e: React.MouseEvent<Node>) => {
     // Если реф диалогового окна === null, то выходим
@@ -44,15 +53,22 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
     };
   }, []);
 
+  const handleClickVarName: TOnClickVarName = (varName: string) => {
+    if (lastFocusedInput.current) {
+      const input = lastFocusedInput.current;
+      input.setRangeText(varName, input.selectionStart, input.selectionEnd, 'end');
+    }
+  };
+
   return (
     <Modal>
       <div className={styles.modal} onClick={handleClickOutsideModal}>
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
-          <VarNameList arrVarNames={arrVarNames} />
+          <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
           <ButtonAddConditionChain />
-          <StartMessage />
-          <FinalMessage />
+          <StartMessage onFocusInput={setLastFocusedInput} />
+          <FinalMessage onFocusInput={setLastFocusedInput} />
         </div>
       </div>
     </Modal>
