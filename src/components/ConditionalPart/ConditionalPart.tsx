@@ -3,7 +3,7 @@ import { TextArea } from '../../controls/TextArea';
 import { ConditionalWordsDecorator } from '../ConditionalWordsDecorator';
 import styles from './ConditionalPart.module.css';
 // import TrashBucketSvg from './../../assets/icons/traskBucket.svg';
-import { TrashBucketSvg } from '../../assets/icons/TrashBucket';
+import { TrashBucketSvg } from '../../assets/icons/TrashBucketSvg';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
 
 interface IConditionalPartProps {
