@@ -3,10 +3,14 @@ import { MessageEditor } from './components/MessageEditor';
 import { Button } from './controls/Button';
 import { TArrVarNames } from './components/VarNameList/VarNameList';
 import localStorageService from './services/localStorage.service';
-
-const arrVarNames: TArrVarNames = ['firstname', 'lastname', 'company', 'position'];
+import varNamesService from './services/varNames.service';
 
 export function App() {
+  const arrVarNames = varNamesService.getVarNames();
+  const callbackSave = () => {
+    // записать шаблон в localStorage.template
+  };
+
   const [isOpenMessageEditor, setIsOpenMessageEditor] = useState(false);
 
   const toggleMessageEditor = () => {

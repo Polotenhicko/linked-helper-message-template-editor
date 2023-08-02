@@ -2,8 +2,7 @@ import { Button } from '../../controls/Button';
 import { TextArea } from '../../controls/TextArea';
 import { ConditionalWordsDecorator } from '../ConditionalWordsDecorator';
 import styles from './ConditionalPart.module.css';
-// import TrashBucketSvg from './../../assets/icons/traskBucket.svg';
-import { TrashBucketSvg } from '../../assets/icons/TrashBucketSvg';
+import { ReactComponent as TrashBucketSvg } from './../../assets/icons/trashBucket.svg';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
 
 interface IConditionalPartProps {

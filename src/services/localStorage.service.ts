@@ -9,7 +9,7 @@ class LocalStorage {
     }
   }
 
-  public setItem(key: string, value: string) {
+  public setItem(key: string, value: any) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
