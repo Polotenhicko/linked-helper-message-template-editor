@@ -5,6 +5,7 @@ import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
 import { useEffect, useRef } from 'react';
 import styles from './MessageEditor.module.css';
+import { ConditionalBlock } from '../ConditionalBlock';
 
 interface IMessageEditorProps {
   onClose: () => void;
@@ -67,6 +68,7 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
           <ButtonAddConditionChain />
           <TextArea onFocusInput={setLastFocusedInput} />
+          <ConditionalBlock onFocusInput={setLastFocusedInput} />
           <TextArea onFocusInput={setLastFocusedInput} />
         </div>
       </div>

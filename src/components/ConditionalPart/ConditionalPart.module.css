@@ -1,0 +1,32 @@
+.conditionalPart {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 30px;
+}
+
+.conditionalOperator {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.conditionalInputWrap {
+  max-width: 86%;
+  width: 100%;
+}
+
+.conditionalInput {
+  width: 100%;
+}
+
+.btnDeleteConditionalBlock {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  padding-right: 6px;
+  color: #333;
+  border: 1px solid #333;
+  border-radius: 10px;
+}

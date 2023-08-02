@@ -39,6 +39,10 @@ export function TextArea({ className, onFocusInput, autoResize = true }: ITextAr
     }
   };
 
+  const handleKeyDownRepeat = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.repeat) e.preventDefault();
+  };
+
   const handleOnFocus = () => {
     if (!onFocusInput) return;
     if (!textAreaRef.current) return;
@@ -49,7 +53,8 @@ export function TextArea({ className, onFocusInput, autoResize = true }: ITextAr
   return (
     <textarea
       className={classNames}
-      onInput={handleAutoResize}
+      onChange={handleAutoResize}
+      onKeyDown={handleKeyDownRepeat}
       ref={textAreaRef}
       onFocus={handleOnFocus}
     ></textarea>

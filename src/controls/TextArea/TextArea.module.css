@@ -9,4 +9,5 @@
   border: 1px solid #999a9e;
   background: #fff;
   overflow-y: hidden;
+  min-height: 50px;
 }
