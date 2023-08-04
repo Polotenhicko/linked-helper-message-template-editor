@@ -1,4 +1,5 @@
 import { LOCAL_STORAGE_ARR_VAR_NAMES_KEY } from '../constants/localStorage';
+import { isString } from '../utils/validators';
 import localStorageService from './localStorage.service';
 
 type TVarNames = string[];
@@ -10,6 +11,7 @@ class VarNamesService {
     const isCorrectModel = this.checkCorrectModel(varNames);
 
     if (!isCorrectModel) {
+      console.error('Incorrect varnames model!', varNames);
       this.setBaseVarNames();
       return this.baseVarNames;
     }
@@ -24,7 +26,7 @@ class VarNamesService {
   private checkCorrectModel(varNames: any): boolean {
     if (!Array.isArray(varNames)) return false;
 
-    const incorrectVarName = varNames.some((varName) => typeof varName !== 'string');
+    const incorrectVarName = varNames.some((varName) => !isString(varName));
     if (incorrectVarName) return false;
 
     return true;

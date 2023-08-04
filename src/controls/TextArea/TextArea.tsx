@@ -1,26 +1,37 @@
-import { useRef, useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './TextArea.module.css';
 import { TSetLastFocusedInput } from '../../components/MessageEditor/MessageEditor';
 
-interface ITextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
+interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
-  onFocusInput?: TSetLastFocusedInput;
   autoResize?: boolean;
+  onFocusInput?: TSetLastFocusedInput;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  textAreaRef?: React.RefObject<HTMLTextAreaElement>;
 }
 
-export function TextArea({ className, onFocusInput, autoResize = true }: ITextAreaProps) {
+export function TextArea({
+  className,
+  onFocusInput,
+  textAreaRef,
+  autoResize = true,
+  onChange,
+  ...other
+}: ITextAreaProps) {
   const classNames = cn(styles.textarea, className);
   const [minHeight, setMinHeight] = useState(0);
 
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  let ref = useRef<HTMLTextAreaElement>(null);
+  if (textAreaRef) ref = textAreaRef;
 
-  const handleAutoResize = () => {
+  const handleAutoResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) onChange(e);
     if (!autoResize) return;
-    if (!textAreaRef.current) return;
-    if (!(textAreaRef.current instanceof HTMLTextAreaElement)) return;
+    if (!ref || !ref.current) return;
+    if (!(ref.current instanceof HTMLTextAreaElement)) return;
 
-    const textAreaEl = textAreaRef.current;
+    const textAreaEl = ref.current;
     const { offsetHeight, clientHeight } = textAreaEl;
     // ставим высоту 0, чтобы потом засетить scrollHeight
     textAreaEl.style.height = '0';
@@ -34,8 +45,7 @@ export function TextArea({ className, onFocusInput, autoResize = true }: ITextAr
       // leftHeight необходим, т.к. scrollHeight с минимальной высотой == clientHeight
       const leftHeight = offsetHeight - clientHeight;
       const currentHeight = textAreaEl.scrollHeight - leftHeight;
-      textAreaEl.style.height =
-        (currentHeight < minHeight ? minHeight : currentHeight) + 'px';
+      textAreaEl.style.height = (currentHeight < minHeight ? minHeight : currentHeight) + 'px';
     }
   };
 
@@ -45,9 +55,9 @@ export function TextArea({ className, onFocusInput, autoResize = true }: ITextAr
 
   const handleOnFocus = () => {
     if (!onFocusInput) return;
-    if (!textAreaRef.current) return;
+    if (!ref || !ref.current) return;
 
-    onFocusInput(textAreaRef.current);
+    onFocusInput(ref.current);
   };
 
   return (
@@ -55,8 +65,9 @@ export function TextArea({ className, onFocusInput, autoResize = true }: ITextAr
       className={classNames}
       onChange={handleAutoResize}
       onKeyDown={handleKeyDownRepeat}
-      ref={textAreaRef}
+      ref={ref}
       onFocus={handleOnFocus}
+      {...other}
     ></textarea>
   );
 }

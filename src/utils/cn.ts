@@ -1,3 +1,5 @@
+import { isObject } from './validators';
+
 type TModifiers = {
   [key: string]: boolean;
 };
@@ -8,7 +10,7 @@ export function cn(modifiers: TModifiers): string;
 export function cn(strings: TStrings): string;
 export function cn(...classNames: TStrings): string;
 export function cn(...args: any[]): string {
-  if (typeof args[0] === 'object' && !Array.isArray(args[0])) {
+  if (isObject(args[0])) {
     // объект
     const classNames: TModifiers = args[0];
     return Object.entries(classNames)

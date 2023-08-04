@@ -1,10 +1,14 @@
 import { Button } from '../../controls/Button';
 import { ConditionalWordsDecorator } from '../ConditionalWordsDecorator';
-import styles from './ButtonAddConditionChain.module.css';
+import styles from './InsertConditionalBlock.module.css';
 
-export function ButtonAddConditionChain() {
+interface IInsertConditionalBlockProps {
+  onInsertConditionalBlock: () => void;
+}
+
+export function InsertConditionalBlock({ onInsertConditionalBlock }: IInsertConditionalBlockProps) {
   return (
-    <Button className={styles.button}>
+    <Button className={styles.button} onClick={onInsertConditionalBlock}>
       <span className={styles.title}>Click to add:</span>
       <ConditionalWordsDecorator>IF</ConditionalWordsDecorator>
       {'[{some_variable} or expression]'}

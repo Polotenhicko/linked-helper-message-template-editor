@@ -1,16 +1,16 @@
 import { LOCAL_STORAGE_TEMPLATE_KEY } from '../constants/localStorage';
+import { isObject, isString } from '../utils/validators';
 import localStorageService from './localStorage.service';
 
-interface IConditionanBlock {
+export interface IConditionalBlock {
   if: string;
-  then: string;
+  then: string | [string, string];
   else: string;
-  internalConditional?: IConditionanBlock;
 }
 
-interface ITemplate {
+export interface ITemplate {
   startMessage: string;
-  conditionalBlock?: IConditionanBlock;
+  conditionalBlocks: IConditionalBlock[];
   finalMessage: string;
 }
 
@@ -25,7 +25,8 @@ class TemplateService {
     const isCorrectModel = this.checkCorrectModel(template);
 
     if (!isCorrectModel) {
-      this.setTemplate(this.emptyTemplate);
+      console.error('Incorrect template model!', template);
+      this.saveTemplate(this.emptyTemplate);
       this.template = this.emptyTemplate;
       return this.emptyTemplate;
     }
@@ -35,47 +36,27 @@ class TemplateService {
     return template;
   }
 
-  // public addEmptyConditionalBlock() {
-  //   if (!this.template.conditionalBlock) {
-
-  //   }
-
-  // }
-
-  public setTemplate(template: ITemplate): boolean {
-    const isSuccessSet = localStorageService.setItem(LOCAL_STORAGE_TEMPLATE_KEY, template);
-    if (!isSuccessSet) return false;
-    this.template = template;
+  public saveTemplate(template: ITemplate): boolean {
+    const isSuccessSave = localStorageService.setItem(LOCAL_STORAGE_TEMPLATE_KEY, template);
+    if (!isSuccessSave) return false;
     return true;
   }
 
   private checkCorrectModel(template: any): boolean {
-    const isObject = (val: any): boolean => {
-      // not null
-      if (!val) return false;
-      // is object
-      if (typeof val !== 'object' || Array.isArray(val)) return false;
+    const isConditionalBlock = (obj: any): boolean => {
+      if (!isObject(obj)) return false;
 
-      return true;
-    };
+      if (!isString(obj.if)) return false;
+      if (!isString(obj.else)) return false;
 
-    const isString = (val: any): boolean => typeof val === 'string';
+      if (Array.isArray(obj.then)) {
+        const thenArr = obj.then;
 
-    const isConditionalBlock = (val: any): boolean => {
-      if (!isObject(val)) return false;
-
-      for (const [key, value] of Object.entries(val)) {
-        switch (key) {
-          case 'if':
-          case 'then':
-          case 'else':
-            if (!isString(value)) return false;
-            break;
-          case 'internalConditional':
-            const isCorrectModel = isConditionalBlock(value);
-            if (!isCorrectModel) return false;
-            break;
-        }
+        if (thenArr.length !== 2) return false;
+        const hasNotString = thenArr.some((v: any) => !isString(v));
+        if (hasNotString) return false;
+      } else {
+        if (!isString(obj.then)) return false;
       }
 
       return true;
@@ -88,17 +69,23 @@ class TemplateService {
     const { startMessage, finalMessage } = template;
     if (!isString(startMessage) || !isString(finalMessage)) return false;
 
-    const { conditionalBlock } = template;
-    if (conditionalBlock) {
-      // check that the conditional block is correct
-      if (!isConditionalBlock(conditionalBlock)) return false;
+    const { conditionalBlocks } = template;
+    if (!Array.isArray(conditionalBlocks)) return false;
+
+    for (const block of conditionalBlocks) {
+      if (!isConditionalBlock(block)) return false;
     }
 
     return true;
   }
 
-  private emptyTemplate: ITemplate = { startMessage: '', finalMessage: '' };
-  private emptyConditionalBlock: IConditionanBlock = { if: '', then: '', else: '' };
+  private get emptyTemplate(): ITemplate {
+    return { startMessage: '', finalMessage: '', conditionalBlocks: [] };
+  }
+
+  private get emptyConditionalBlock(): IConditionalBlock {
+    return { if: '', then: '', else: '' };
+  }
 }
 
 export default new TemplateService();
