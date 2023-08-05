@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { MessageEditor } from './components/MessageEditor';
 import { Button } from './controls/Button';
-import { TArrVarNames } from './components/VarNameList/VarNameList';
 import localStorageService from './services/localStorage.service';
 import varNamesService from './services/varNames.service';
+import templateService from './services/template.service';
 
 export function App() {
   const arrVarNames = varNamesService.getVarNames();
@@ -12,6 +12,8 @@ export function App() {
   };
 
   const [isOpenMessageEditor, setIsOpenMessageEditor] = useState(false);
+
+  const template = templateService.getTemplate();
 
   const toggleMessageEditor = () => {
     setIsOpenMessageEditor(!isOpenMessageEditor);
@@ -25,7 +27,12 @@ export function App() {
     <>
       <Button onClick={toggleMessageEditor}>Message Editor</Button>
       {isOpenMessageEditor && (
-        <MessageEditor onClose={handleCloseMessageEditor} arrVarNames={arrVarNames} />
+        <MessageEditor
+          onClose={handleCloseMessageEditor}
+          arrVarNames={arrVarNames}
+          template={template}
+          callbackSave={callbackSave}
+        />
       )}
     </>
   );

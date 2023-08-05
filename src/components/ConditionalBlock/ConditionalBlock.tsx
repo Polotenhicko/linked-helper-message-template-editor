@@ -1,15 +1,16 @@
-// import { IConditionalBlock } from '../../services/template.service';
+import { IConditionalBlock } from '../../services/template.service';
 import { ConditionalPart } from '../ConditionalPart';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
 import styles from './ConditionalBlock.module.css';
 
 interface IConditionalBlockProps {
+  id: number;
   onFocusInput: TSetLastFocusedInput;
-  // conditionalObj?: IConditionalBlock;
+  conditionalBlock?: IConditionalBlock;
 }
 
-export function ConditionalBlock({ onFocusInput }: IConditionalBlockProps) {
-  // if (!conditionalObj) return null;
+export function ConditionalBlock({ onFocusInput, conditionalBlock, id }: IConditionalBlockProps) {
+  if (!conditionalBlock) return null;
 
   return (
     <div className={styles.conditionalBlock}>

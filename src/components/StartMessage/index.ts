@@ -1,1 +1,0 @@
-export { StartMessage } from './StartMessage'

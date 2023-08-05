@@ -2,40 +2,35 @@ import { Modal } from '../Modal';
 import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
 import { useEffect, useRef, useState } from 'react';
-import styles from './MessageEditor.module.css';
 import { ConditionalBlock } from '../ConditionalBlock';
-import templateService from '../../services/template.service';
-import { StartMessage } from '../StartMessage';
-import { FinalMessage } from '../FinalMessage';
 import { InsertConditionalBlock } from '../InsertConditionalBlock';
+import { TextArea } from '../../controls/TextArea';
+import templateService, { IConditionalBlock, ITemplate } from '../../services/template.service';
+import styles from './MessageEditor.module.css';
 
 interface IMessageEditorProps {
   onClose: () => void;
   arrVarNames: TArrVarNames;
+  template: ITemplate;
+  callbackSave: () => void;
 }
 
 export type TOnClickVarName = (varName: string) => void;
 
 export type TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => void;
 
-export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
+export function MessageEditor({ onClose, arrVarNames, template: sample }: IMessageEditorProps) {
   const lastFocusedInput = useRef<HTMLTextAreaElement | null>(null);
   const firstInput = useRef<HTMLTextAreaElement>(null);
   const messageEditorRef = useRef<HTMLDivElement>(null);
 
-  // const template = templateService.getTemplate();
+  const [conditionalBlocks, setConditionalBlocks] = useState<IConditionalBlock[]>(sample.conditionalBlocks);
+  const [startMessage, setStartMessage] = useState(sample.startMessage);
+  const [finalMessage, setfinalMessage] = useState(sample.finalMessage);
 
   const setLastFocusedInput: TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => {
     lastFocusedInput.current = ref;
   };
-
-  const handleInsertConditionalBlock = () => {
-    // const isSuccessAdded = templateService.addEmptyConditionalBlock();
-    // if (isSuccessAdded) {
-    // }
-  };
-
-  const handleDeleteConditionalBlock = () => {};
 
   const handleClickOutsideModal = (e: React.MouseEvent<Node>) => {
     // Если реф диалогового окна === null, то выходим
@@ -56,9 +51,9 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
   };
 
   useEffect(() => {
-    // Блокируем скролл во время показа модалки
+    // Block scroll when show modal
     document.body.style.overflow = 'hidden';
-    // Закрываем модалку на Esc
+    // Close modal on Esc
     document.body.addEventListener('keydown', handleKeydownEscape);
     return () => {
       document.body.style.overflow = 'auto';
@@ -76,17 +71,39 @@ export function MessageEditor({ onClose, arrVarNames }: IMessageEditorProps) {
     }
   };
 
+  const handleChangeStartMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setStartMessage(e.target.value);
+  };
+
+  const handleChangeFinalMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setfinalMessage(e.target.value);
+  };
+
+  const firstConditionalBlock = conditionalBlocks[0];
+
+  const handleAddConditionalBlock = () => {
+    templateService.addEmptyConditionalBlock(conditionalBlocks);
+
+    setConditionalBlocks([...conditionalBlocks]);
+    console.log(conditionalBlocks);
+  };
+
   return (
     <Modal>
       <div className={styles.modal} onClick={handleClickOutsideModal}>
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
-          <InsertConditionalBlock onInsertConditionalBlock={handleInsertConditionalBlock} />
+          <InsertConditionalBlock onAddConditionalBlock={handleAddConditionalBlock} />
 
-          <StartMessage onFocusInput={setLastFocusedInput} textAreaRef={firstInput} />
-          <ConditionalBlock onFocusInput={setLastFocusedInput} />
-          <FinalMessage onFocusInput={setLastFocusedInput} />
+          <TextArea
+            onFocusInput={setLastFocusedInput}
+            onChange={handleChangeStartMessage}
+            value={startMessage}
+            textAreaRef={firstInput}
+          />
+          <ConditionalBlock onFocusInput={setLastFocusedInput} conditionalBlock={firstConditionalBlock} id={0} />
+          <TextArea onFocusInput={setLastFocusedInput} onChange={handleChangeFinalMessage} value={finalMessage} />
         </div>
       </div>
     </Modal>

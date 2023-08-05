@@ -1,8 +1,9 @@
 import { LOCAL_STORAGE_TEMPLATE_KEY } from '../constants/localStorage';
-import { isObject, isString } from '../utils/validators';
+import { isNumber, isObject, isString } from '../utils/validators';
 import localStorageService from './localStorage.service';
 
 export interface IConditionalBlock {
+  id: number;
   if: string;
   then: string | [string, string];
   else: string;
@@ -33,6 +34,8 @@ class TemplateService {
 
     this.template = template;
 
+    this.maxConditionalId = this.getMaxId(template.conditionalBlocks);
+
     return template;
   }
 
@@ -42,12 +45,27 @@ class TemplateService {
     return true;
   }
 
+  public addEmptyConditionalBlock(conditionalBlocks: IConditionalBlock[]): IConditionalBlock[] {
+    const emptyConditionalBlock = this.emptyConditionalBlock;
+
+    if (conditionalBlocks.length) {
+      const lastConditionalBlock = conditionalBlocks[conditionalBlocks.length - 1];
+      const thenString = lastConditionalBlock.then as string;
+      lastConditionalBlock.then = [thenString, ''];
+    }
+
+    conditionalBlocks.push(emptyConditionalBlock);
+    return conditionalBlocks;
+  }
+
   private checkCorrectModel(template: any): boolean {
     const isConditionalBlock = (obj: any): boolean => {
       if (!isObject(obj)) return false;
 
       if (!isString(obj.if)) return false;
       if (!isString(obj.else)) return false;
+
+      if (!isNumber(obj.id)) return false;
 
       if (Array.isArray(obj.then)) {
         const thenArr = obj.then;
@@ -79,12 +97,19 @@ class TemplateService {
     return true;
   }
 
+  private maxConditionalId = 1;
+
   private get emptyTemplate(): ITemplate {
     return { startMessage: '', finalMessage: '', conditionalBlocks: [] };
   }
 
   private get emptyConditionalBlock(): IConditionalBlock {
-    return { if: '', then: '', else: '' };
+    return { id: this.maxConditionalId++, if: '', then: '', else: '' };
+  }
+
+  private getMaxId(conditionalBlocks: IConditionalBlock[]): number {
+    const max = Math.max(...conditionalBlocks.map((block) => block.id));
+    return isNumber(max) ? max : 1;
   }
 }
 
