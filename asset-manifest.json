@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/linked-helper-message-template-editor/static/css/main.de3fd39e.css",
+    "main.js": "/linked-helper-message-template-editor/static/js/main.162f00a6.js",
+    "index.html": "/linked-helper-message-template-editor/index.html",
+    "static/media/trashBucket.svg": "/linked-helper-message-template-editor/static/media/trashBucket.462e23f540db709a660edc8099a8f13c.svg",
+    "main.de3fd39e.css.map": "/linked-helper-message-template-editor/static/css/main.de3fd39e.css.map",
+    "main.162f00a6.js.map": "/linked-helper-message-template-editor/static/js/main.162f00a6.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.de3fd39e.css",
+    "static/js/main.162f00a6.js"
+  ]
+}
