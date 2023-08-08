@@ -74,7 +74,8 @@ export function MessageEditor({
   }, []);
 
   const handleClickVarName: TOnClickVarName = (varName: string) => {
-    const input = lastFocusedInput.current ? lastFocusedInput.current : firstInput.current;
+    const existLastFocusedInput = document.body.contains(lastFocusedInput.current);
+    const input = existLastFocusedInput ? lastFocusedInput.current : firstInput.current;
 
     if (input) {
       input.setRangeText(varName, input.selectionStart, input.selectionEnd, 'end');

@@ -7,12 +7,16 @@ interface IConditionalBlockListProps {
   onFocusInput: TSetLastFocusedInput;
   conditionalBlocks: IConditionalBlock[];
   setChangesNotSaved: () => void;
+  parentId?: number;
+  parentOperator?: 'if' | 'then' | 'else';
 }
 
 export function ConditionalBlockList({
   onFocusInput,
   conditionalBlocks,
   setChangesNotSaved,
+  parentId,
+  parentOperator,
 }: IConditionalBlockListProps) {
   if (!conditionalBlocks.length) return null;
 
@@ -24,6 +28,8 @@ export function ConditionalBlockList({
           onFocusInput={onFocusInput}
           conditionalBlock={conditionalBlock}
           setChangesNotSaved={setChangesNotSaved}
+          parentId={parentId}
+          parentOperator={parentOperator}
         />
       ))}
     </div>

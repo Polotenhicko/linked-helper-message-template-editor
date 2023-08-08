@@ -11,13 +11,16 @@ export function InsertConditionalBlock({ setChangesNotSaved, lastFocusedInput }:
   const handleAddConditionalBlock = () => {
     const lastFocus = lastFocusedInput.current;
 
+    const isRemovedInput = !document.body.contains(lastFocus);
+
     const id: number | null = lastFocus?.dataset.id ? Number(lastFocus.dataset.id) : null;
     const operator: string | null = lastFocus?.dataset.operator ? lastFocus.dataset.operator : null;
 
-    if (!lastFocus || !id || !operator) {
+    const isAddConditionalBlockToStart = !id || !operator || isRemovedInput;
+
+    if (isAddConditionalBlockToStart) {
       templateService.addEmptyConditionalBlock();
       setChangesNotSaved();
-      console.log(templateService.template);
 
       return;
     }

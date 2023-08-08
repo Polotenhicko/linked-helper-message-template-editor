@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { TextArea } from '../../controls/TextArea';
-import { IConditionalBlock, IConditionalOperatorObj } from '../../services/template.service';
+import templateService, { IConditionalBlock, IConditionalOperatorObj } from '../../services/template.service';
 import { ConditionalBlock } from '../ConditionalBlock';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
-import styles from './ConditionalOperator.module.css';
 import { ConditionalBlockList } from '../ConditionalBlockList';
+import { Button } from '../../controls/Button';
+import { ReactComponent as TrashBucketSvg } from '../../assets/icons/trashBucket.svg';
+import styles from './ConditionalOperator.module.css';
+import { isNumber } from '../../utils/validators';
 
 interface IConditionalOperatorProps {
   onFocusInput: TSetLastFocusedInput;
@@ -30,9 +33,13 @@ export function ConditionalOperator({
 
   const { conditionalBlocks } = conditionalOperator;
   const withConditionalBlock = !!conditionalBlocks.length;
+  const isIfOperator = operator === 'if';
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (conditionalOperator.secondText === '' && conditionalOperator.firstText !== '') {
+      console.log('delete secondInput');
+
+      setFirstValue(conditionalOperator.firstText);
       setSecondValue('');
     }
   }, [conditionalOperator.secondText]);
@@ -49,10 +56,27 @@ export function ConditionalOperator({
     conditionalOperator.secondText = value;
   };
 
+  const handleClickDeleteButton = () => {
+    console.log(parentId, parentOperator);
+
+    if (parentId === undefined || !parentOperator) {
+      templateService.deleteConditionalBlock(id);
+      return;
+    }
+
+    templateService.deleteConditionalBlock(id, { id: parentId, operator: parentOperator });
+  };
+
   return (
     <div className={styles.conditionalOperatorWrap}>
       <div className={styles.conditionalOperator}>
         <span className="conditionalStroke">{operator}</span>
+        {isIfOperator && (
+          <Button className={styles.btnDeleteConditionalBlock} onClick={handleClickDeleteButton}>
+            <TrashBucketSvg />
+            Delete
+          </Button>
+        )}
       </div>
       <div className={styles.conditionalInputWrap}>
         <TextArea
@@ -67,6 +91,8 @@ export function ConditionalOperator({
           conditionalBlocks={conditionalBlocks}
           onFocusInput={onFocusInput}
           setChangesNotSaved={setChangesNotSaved}
+          parentId={id}
+          parentOperator={operator}
         />
         {withConditionalBlock && (
           <TextArea
