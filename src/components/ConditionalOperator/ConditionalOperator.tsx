@@ -37,12 +37,10 @@ export function ConditionalOperator({
 
   useLayoutEffect(() => {
     if (conditionalOperator.secondText === '' && conditionalOperator.firstText !== '') {
-      console.log('delete secondInput');
-
       setFirstValue(conditionalOperator.firstText);
       setSecondValue('');
     }
-  }, [conditionalOperator.secondText]);
+  }, [conditionalOperator.secondText, conditionalOperator.firstText]);
 
   const handleFirstChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -57,8 +55,6 @@ export function ConditionalOperator({
   };
 
   const handleClickDeleteButton = () => {
-    console.log(parentId, parentOperator);
-
     if (parentId === undefined || !parentOperator) {
       templateService.deleteConditionalBlock(id);
       return;

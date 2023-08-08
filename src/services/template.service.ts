@@ -83,7 +83,7 @@ class TemplateService extends ObserverService {
     const isSuccessDelete = this.deleteConditionalBlockFromArr(id, parentOperatorObj.conditionalBlocks);
     if (!isSuccessDelete) return false;
 
-    if (!parentOperatorObj.conditionalBlocks.length) {
+    if (!parentOperatorObj.conditionalBlocks.length && parentOperatorObj.secondText) {
       parentOperatorObj.firstText += '\n' + parentOperatorObj.secondText;
       parentOperatorObj.secondText = '';
     }
