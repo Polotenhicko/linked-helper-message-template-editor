@@ -1,0 +1,12 @@
+.actionPanel {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+  color: #fff;
+}

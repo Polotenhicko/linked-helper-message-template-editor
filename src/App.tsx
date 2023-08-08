@@ -4,35 +4,51 @@ import { Button } from './controls/Button';
 import localStorageService from './services/localStorage.service';
 import varNamesService from './services/varNames.service';
 import templateService from './services/template.service';
+import { MessagePreview } from './components/MessagePreview';
+
+export type TCallbackSave = () => Promise<void>;
 
 export function App() {
   const arrVarNames = varNamesService.getVarNames();
-  const callbackSave = () => {
-    // записать шаблон в localStorage.template
+  const callbackSave = async () => {
+    templateService.saveTemplate();
   };
 
   const [isOpenMessageEditor, setIsOpenMessageEditor] = useState(false);
+  const [isOpenMessagePreview, setIsOpenMessagePreview] = useState(false);
 
   const template = templateService.getTemplate();
 
-  const toggleMessageEditor = () => {
-    setIsOpenMessageEditor(!isOpenMessageEditor);
+  const openMessageEditor = () => {
+    setIsOpenMessageEditor(true);
   };
 
-  const handleCloseMessageEditor = () => {
+  const closeMessageEditor = () => {
     setIsOpenMessageEditor(false);
+  };
+
+  const openMessagePreview = () => {
+    setIsOpenMessagePreview(true);
+  };
+
+  const closeMessagePreview = () => {
+    setIsOpenMessagePreview(false);
   };
 
   return (
     <>
-      <Button onClick={toggleMessageEditor}>Message Editor</Button>
+      <Button onClick={openMessageEditor}>Message Editor</Button>
       {isOpenMessageEditor && (
         <MessageEditor
-          onClose={handleCloseMessageEditor}
+          onClose={closeMessageEditor}
           arrVarNames={arrVarNames}
           template={template}
           callbackSave={callbackSave}
+          onShowMessagePreview={openMessagePreview}
         />
+      )}
+      {isOpenMessagePreview && (
+        <MessagePreview arrVarNames={arrVarNames} template={template} onClose={closeMessagePreview} />
       )}
     </>
   );

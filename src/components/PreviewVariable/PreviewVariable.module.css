@@ -1,0 +1,15 @@
+.variableWrap {
+  position: relative;
+}
+
+.floatingPlaceholder {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  user-select: none;
+  font-size: 12px;
+}
+
+.variableInput {
+  padding-top: 20px;
+}

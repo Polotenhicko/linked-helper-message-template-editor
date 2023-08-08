@@ -1,22 +1,54 @@
 import { IConditionalBlock } from '../../services/template.service';
-import { ConditionalPart } from '../ConditionalPart';
+import { ConditionalOperator } from '../ConditionalOperator';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
 import styles from './ConditionalBlock.module.css';
 
 interface IConditionalBlockProps {
-  id: number;
   onFocusInput: TSetLastFocusedInput;
   conditionalBlock?: IConditionalBlock;
+  setChangesNotSaved: () => void;
+  parentId?: number;
+  parentOperator?: 'if' | 'then' | 'else';
 }
 
-export function ConditionalBlock({ onFocusInput, conditionalBlock, id }: IConditionalBlockProps) {
+export function ConditionalBlock({
+  onFocusInput,
+  conditionalBlock,
+  setChangesNotSaved,
+  parentId,
+  parentOperator,
+}: IConditionalBlockProps) {
   if (!conditionalBlock) return null;
 
   return (
     <div className={styles.conditionalBlock}>
-      <ConditionalPart onFocusInput={onFocusInput} operator="IF" />
-      <ConditionalPart onFocusInput={onFocusInput} operator="THEN" />
-      <ConditionalPart onFocusInput={onFocusInput} operator="ELSE" />
+      <ConditionalOperator
+        onFocusInput={onFocusInput}
+        conditionalOperator={conditionalBlock.if}
+        setChangesNotSaved={setChangesNotSaved}
+        operator="if"
+        id={conditionalBlock.id}
+        parentId={parentId}
+        parentOperator={parentOperator}
+      />
+      <ConditionalOperator
+        onFocusInput={onFocusInput}
+        conditionalOperator={conditionalBlock.then}
+        setChangesNotSaved={setChangesNotSaved}
+        operator="then"
+        id={conditionalBlock.id}
+        parentId={parentId}
+        parentOperator={parentOperator}
+      />
+      <ConditionalOperator
+        onFocusInput={onFocusInput}
+        conditionalOperator={conditionalBlock.else}
+        setChangesNotSaved={setChangesNotSaved}
+        operator="else"
+        id={conditionalBlock.id}
+        parentId={parentId}
+        parentOperator={parentOperator}
+      />
     </div>
   );
 }

@@ -10,4 +10,5 @@
   background: #fff;
   overflow-y: hidden;
   min-height: 50px;
+  flex-shrink: 0;
 }

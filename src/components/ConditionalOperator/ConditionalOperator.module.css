@@ -1,7 +1,9 @@
-.conditionalPart {
+.conditionalOperatorWrap {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   column-gap: 30px;
+  min-width: 650px;
 }
 
 .conditionalOperator {
@@ -11,8 +13,11 @@
 }
 
 .conditionalInputWrap {
-  max-width: 86%;
   width: 100%;
+  max-width: calc(100% - 170px);
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
 
 .conditionalInput {

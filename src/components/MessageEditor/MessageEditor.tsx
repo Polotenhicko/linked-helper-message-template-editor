@@ -7,29 +7,50 @@ import { InsertConditionalBlock } from '../InsertConditionalBlock';
 import { TextArea } from '../../controls/TextArea';
 import templateService, { IConditionalBlock, ITemplate } from '../../services/template.service';
 import styles from './MessageEditor.module.css';
+import { useObserverService } from '../../hooks/useObserverService';
+import { TCallbackSave } from '../../App';
+import { ActionPanel } from '../ActionPanel';
+import { ConditionalBlockList } from '../ConditionalBlockList';
 
 interface IMessageEditorProps {
   onClose: () => void;
   arrVarNames: TArrVarNames;
   template: ITemplate;
-  callbackSave: () => void;
+  callbackSave: TCallbackSave;
+  onShowMessagePreview: () => void;
 }
 
 export type TOnClickVarName = (varName: string) => void;
 
 export type TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => void;
 
-export function MessageEditor({ onClose, arrVarNames, template: sample }: IMessageEditorProps) {
+export function MessageEditor({
+  onClose,
+  arrVarNames,
+  template: sample,
+  callbackSave,
+  onShowMessagePreview,
+}: IMessageEditorProps) {
   const lastFocusedInput = useRef<HTMLTextAreaElement | null>(null);
   const firstInput = useRef<HTMLTextAreaElement>(null);
   const messageEditorRef = useRef<HTMLDivElement>(null);
 
-  const [conditionalBlocks, setConditionalBlocks] = useState<IConditionalBlock[]>(sample.conditionalBlocks);
+  useObserverService(templateService);
+
   const [startMessage, setStartMessage] = useState(sample.startMessage);
   const [finalMessage, setfinalMessage] = useState(sample.finalMessage);
+  const [isLastChangesSaved, setIsLastChangesSaved] = useState(true);
 
   const setLastFocusedInput: TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => {
     lastFocusedInput.current = ref;
+  };
+
+  const setChangesNotSaved = () => {
+    setIsLastChangesSaved(false);
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   const handleClickOutsideModal = (e: React.MouseEvent<Node>) => {
@@ -40,24 +61,15 @@ export function MessageEditor({ onClose, arrVarNames, template: sample }: IMessa
 
     // Если клик был сделан не внутри компонента
     if (!messageEditorRef.current.contains(e.target)) {
-      onClose();
-    }
-  };
-
-  const handleKeydownEscape = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      onClose();
+      handleClose();
     }
   };
 
   useEffect(() => {
     // Block scroll when show modal
     document.body.style.overflow = 'hidden';
-    // Close modal on Esc
-    document.body.addEventListener('keydown', handleKeydownEscape);
     return () => {
       document.body.style.overflow = 'auto';
-      document.body.removeEventListener('keydown', handleKeydownEscape);
     };
   }, []);
 
@@ -72,21 +84,26 @@ export function MessageEditor({ onClose, arrVarNames, template: sample }: IMessa
   };
 
   const handleChangeStartMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setStartMessage(e.target.value);
+    const val = e.target.value;
+    setStartMessage(val);
+    setChangesNotSaved();
+    sample.startMessage = val;
   };
 
   const handleChangeFinalMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setfinalMessage(e.target.value);
+    const val = e.target.value;
+    setfinalMessage(val);
+    setChangesNotSaved();
+    sample.finalMessage = val;
   };
 
-  const firstConditionalBlock = conditionalBlocks[0];
-
-  const handleAddConditionalBlock = () => {
-    templateService.addEmptyConditionalBlock(conditionalBlocks);
-
-    setConditionalBlocks([...conditionalBlocks]);
-    console.log(conditionalBlocks);
+  const handleSaveTemplate = () => {
+    callbackSave().then(() => {
+      setIsLastChangesSaved(true);
+    });
   };
+
+  const conditionalBlocks = sample.conditionalBlocks;
 
   return (
     <Modal>
@@ -94,7 +111,7 @@ export function MessageEditor({ onClose, arrVarNames, template: sample }: IMessa
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
-          <InsertConditionalBlock onAddConditionalBlock={handleAddConditionalBlock} />
+          <InsertConditionalBlock setChangesNotSaved={setChangesNotSaved} lastFocusedInput={lastFocusedInput} />
 
           <TextArea
             onFocusInput={setLastFocusedInput}
@@ -102,8 +119,17 @@ export function MessageEditor({ onClose, arrVarNames, template: sample }: IMessa
             value={startMessage}
             textAreaRef={firstInput}
           />
-          <ConditionalBlock onFocusInput={setLastFocusedInput} conditionalBlock={firstConditionalBlock} id={0} />
+          <ConditionalBlockList
+            onFocusInput={setLastFocusedInput}
+            conditionalBlocks={conditionalBlocks}
+            setChangesNotSaved={setChangesNotSaved}
+          />
           <TextArea onFocusInput={setLastFocusedInput} onChange={handleChangeFinalMessage} value={finalMessage} />
+          <ActionPanel
+            onSaveTemplate={handleSaveTemplate}
+            onClose={handleClose}
+            onShowMessagePreview={onShowMessagePreview}
+          />
         </div>
       </div>
     </Modal>

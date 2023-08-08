@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './TextArea.module.css';
 import { TSetLastFocusedInput } from '../../components/MessageEditor/MessageEditor';
@@ -20,20 +20,27 @@ export function TextArea({
   ...other
 }: ITextAreaProps) {
   const classNames = cn(styles.textarea, className);
-  const [minHeight, setMinHeight] = useState(0);
+  const [minHeight, setMinHeight] = useState<null | number>(null);
 
   let ref = useRef<HTMLTextAreaElement>(null);
   if (textAreaRef) ref = textAreaRef;
 
-  const handleAutoResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) onChange(e);
+  useLayoutEffect(() => {
     if (!autoResize) return;
     if (!ref || !ref.current) return;
     if (!(ref.current instanceof HTMLTextAreaElement)) return;
 
     const textAreaEl = ref.current;
     const { offsetHeight, clientHeight } = textAreaEl;
-    // ставим высоту 0, чтобы потом засетить scrollHeight
+
+    if (minHeight === null) {
+      // update minHeiht, cause in first render offsetHeight = 0
+      setMinHeight(offsetHeight);
+      return;
+    }
+
+    // set height 0, for after set scrollHeight
+
     textAreaEl.style.height = '0';
 
     if (!minHeight) {
@@ -47,10 +54,11 @@ export function TextArea({
       const currentHeight = textAreaEl.scrollHeight - leftHeight;
       textAreaEl.style.height = (currentHeight < minHeight ? minHeight : currentHeight) + 'px';
     }
-  };
+  });
 
   const handleKeyDownRepeat = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.repeat) e.preventDefault();
+    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+    if (e.repeat && !allowedKeys.includes(e.key)) e.preventDefault();
   };
 
   const handleOnFocus = () => {
@@ -63,7 +71,7 @@ export function TextArea({
   return (
     <textarea
       className={classNames}
-      onChange={handleAutoResize}
+      onChange={onChange}
       onKeyDown={handleKeyDownRepeat}
       ref={ref}
       onFocus={handleOnFocus}
