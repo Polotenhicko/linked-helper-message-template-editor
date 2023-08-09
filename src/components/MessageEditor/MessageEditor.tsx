@@ -40,6 +40,8 @@ export function MessageEditor({
   const [finalMessage, setfinalMessage] = useState(sample.finalMessage);
   const [isLastChangesSaved, setIsLastChangesSaved] = useState(true);
 
+  const [isRendered, setIsRendered] = useState(false);
+
   const setLastFocusedInput: TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => {
     lastFocusedInput.current = ref;
   };
@@ -77,6 +79,9 @@ export function MessageEditor({
   useEffect(() => {
     // Block scroll when show modal
     document.body.style.overflow = 'hidden';
+
+    setIsRendered(true);
+
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -113,11 +118,13 @@ export function MessageEditor({
     });
   };
 
-  const conditionalBlocks = sample.conditionalBlocks;
+  const modalStyle = {
+    opacity: isRendered ? 1 : 0,
+  };
 
   return (
     <Modal>
-      <div className={styles.modal} onClick={handleClickOutsideModal}>
+      <div className={styles.modal} onClick={handleClickOutsideModal} style={modalStyle}>
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
@@ -131,7 +138,7 @@ export function MessageEditor({
           />
           <ConditionalBlockList
             onFocusInput={setLastFocusedInput}
-            conditionalBlocks={conditionalBlocks}
+            conditionalBlocks={sample.conditionalBlocks}
             setChangesNotSaved={setChangesNotSaved}
           />
           <TextArea onFocusInput={setLastFocusedInput} onChange={handleChangeFinalMessage} value={finalMessage} />

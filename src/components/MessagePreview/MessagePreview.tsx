@@ -21,10 +21,12 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
   const messagePreviewRef = useRef<HTMLDivElement | null>(null);
 
   const [message, setMessage] = useState('');
+  const [isRendered, setIsRendered] = useState(false);
 
   useLayoutEffect(() => {
     previewMessageService.setVariables(arrVarNames, sample);
     setMessage(previewMessageService.getMessage());
+    setIsRendered(true);
   }, []);
 
   useObserverService(previewMessageService);
@@ -48,9 +50,13 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
     setMessage(previewMessageService.getMessage());
   };
 
+  const modalStyle = {
+    opacity: isRendered ? 1 : 0,
+  };
+
   return (
     <Modal>
-      <div className={styles.modal} onClick={handleClickOutsideModal}>
+      <div className={styles.modal} onClick={handleClickOutsideModal} style={modalStyle}>
         <div className={styles.messagePreview} ref={messagePreviewRef}>
           <h2 className={styles.title}>Message Preview</h2>
           <div className={styles.message}>{message}</div>

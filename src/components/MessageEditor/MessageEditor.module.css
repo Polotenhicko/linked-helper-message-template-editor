@@ -10,6 +10,8 @@
   align-items: center;
   cursor: pointer;
   z-index: 9;
+  opacity: 0;
+  transition: all 0.3s ease;
 }
 
 .messageEditor {
