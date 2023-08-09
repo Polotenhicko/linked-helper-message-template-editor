@@ -1,14 +1,17 @@
 {
   "files": {
-    "main.css": "/linked-helper-message-template-editor/static/css/main.de3fd39e.css",
-    "main.js": "/linked-helper-message-template-editor/static/js/main.162f00a6.js",
-    "index.html": "/linked-helper-message-template-editor/index.html",
-    "static/media/trashBucket.svg": "/linked-helper-message-template-editor/static/media/trashBucket.462e23f540db709a660edc8099a8f13c.svg",
-    "main.de3fd39e.css.map": "/linked-helper-message-template-editor/static/css/main.de3fd39e.css.map",
-    "main.162f00a6.js.map": "/linked-helper-message-template-editor/static/js/main.162f00a6.js.map"
+    "main.css": "/message-template-editor/static/css/main.e4ea607c.css",
+    "main.js": "/message-template-editor/static/js/main.b2aba6cb.js",
+    "static/media/close.svg": "/message-template-editor/static/media/close.f362d9b19befa378f44ea0901a7ea157.svg",
+    "index.html": "/message-template-editor/index.html",
+    "static/media/trashBucket.svg": "/message-template-editor/static/media/trashBucket.462e23f540db709a660edc8099a8f13c.svg",
+    "static/media/canvas.svg": "/message-template-editor/static/media/canvas.6e0671fca12c021512ae79f65cc93f97.svg",
+    "static/media/check.svg": "/message-template-editor/static/media/check.ffedad04f810fdfce30ac7eb5be62762.svg",
+    "main.e4ea607c.css.map": "/message-template-editor/static/css/main.e4ea607c.css.map",
+    "main.b2aba6cb.js.map": "/message-template-editor/static/js/main.b2aba6cb.js.map"
   },
   "entrypoints": [
-    "static/css/main.de3fd39e.css",
-    "static/js/main.162f00a6.js"
+    "static/css/main.e4ea607c.css",
+    "static/js/main.b2aba6cb.js"
   ]
 }
