@@ -1,13 +1,11 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { TextArea } from '../../controls/TextArea';
-import templateService, { IConditionalBlock, IConditionalOperatorObj } from '../../services/template.service';
-import { ConditionalBlock } from '../ConditionalBlock';
+import templateService, { IConditionalOperatorObj } from '../../services/template.service';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
 import { ConditionalBlockList } from '../ConditionalBlockList';
 import { Button } from '../../controls/Button';
 import { ReactComponent as TrashBucketSvg } from '../../assets/icons/trashBucket.svg';
 import styles from './ConditionalOperator.module.css';
-import { isNumber } from '../../utils/validators';
 
 interface IConditionalOperatorProps {
   onFocusInput: TSetLastFocusedInput;

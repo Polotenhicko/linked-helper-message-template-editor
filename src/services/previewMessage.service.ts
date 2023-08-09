@@ -1,6 +1,6 @@
 import { TArrVarNames } from '../components/VarNameList/VarNameList';
 import { ObserverService } from './observer.service';
-import templateService, { IConditionalBlock, IConditionalOperatorObj, ITemplate } from './template.service';
+import { IConditionalBlock, IConditionalOperatorObj, ITemplate } from './template.service';
 
 interface IVarNamesObj {
   [key: string]: string;

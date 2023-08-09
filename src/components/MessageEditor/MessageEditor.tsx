@@ -2,7 +2,6 @@ import { Modal } from '../Modal';
 import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
 import { useEffect, useRef, useState } from 'react';
-import { ConditionalBlock } from '../ConditionalBlock';
 import { InsertConditionalBlock } from '../InsertConditionalBlock';
 import { TextArea } from '../../controls/TextArea';
 import templateService, { IConditionalBlock, ITemplate } from '../../services/template.service';

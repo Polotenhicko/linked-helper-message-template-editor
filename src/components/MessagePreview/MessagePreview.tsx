@@ -4,7 +4,7 @@ import { TArrVarNames } from '../VarNameList/VarNameList';
 import { ITemplate } from '../../services/template.service';
 import { ReactComponent as CloseSvg } from '../../assets/icons/close.svg';
 import { PreviewVariableList } from '../PreviewVariableList';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Button } from '../../controls/Button';
 import { useObserverService } from '../../hooks/useObserverService';
 import previewMessageService from '../../services/previewMessage.service';

@@ -3,7 +3,6 @@ import { Button } from '../../controls/Button';
 import { ReactComponent as CanvasSvg } from '../../assets/icons/canvas.svg';
 import { ReactComponent as CheckSvg } from '../../assets/icons/check.svg';
 import { ReactComponent as CloseSvg } from '../../assets/icons/close.svg';
-import { TCallbackSave } from '../../App';
 
 interface IActionPanelProps {
   onSaveTemplate: () => void;
