@@ -46,13 +46,13 @@ export function TextArea({
     if (!minHeight) {
       // Первый ввод текста, сохраняем минимальную высоту, чтобы textarea не прыгала
       const currentHeight = offsetHeight;
-      textAreaEl.style.height = currentHeight + 'px';
+      textAreaEl.style.height = currentHeight + 5 + 'px';
       setMinHeight(currentHeight);
     } else {
       // leftHeight необходим, т.к. scrollHeight с минимальной высотой == clientHeight
       const leftHeight = offsetHeight - clientHeight;
       const currentHeight = textAreaEl.scrollHeight - leftHeight;
-      textAreaEl.style.height = (currentHeight < minHeight ? minHeight : currentHeight) + 'px';
+      textAreaEl.style.height = (currentHeight < minHeight ? minHeight : currentHeight) + 5 + 'px';
     }
   });
 
