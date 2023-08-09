@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './TextArea.module.css';
 import { TSetLastFocusedInput } from '../../components/MessageEditor/MessageEditor';
@@ -32,12 +32,6 @@ export function TextArea({
 
     const textAreaEl = ref.current;
     const { offsetHeight, clientHeight } = textAreaEl;
-
-    if (minHeight === null) {
-      // update minHeiht, cause in first render offsetHeight = 0
-      setMinHeight(offsetHeight);
-      return;
-    }
 
     // set height 0, for after set scrollHeight
 
