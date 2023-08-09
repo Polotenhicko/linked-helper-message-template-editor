@@ -10,8 +10,6 @@ class PreviewMessage extends ObserverService {
   public getMessage(): string {
     if (!this.template) return '';
 
-    console.log(this.template);
-
     const message = this.generateMessage(this.template, this.varNames);
 
     if (message === this.lastMessage) return message;

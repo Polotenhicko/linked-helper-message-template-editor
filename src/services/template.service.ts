@@ -220,7 +220,7 @@ class TemplateService extends ObserverService {
 
   private get emptyConditionalBlock(): IConditionalBlock {
     const emptyBlock = {
-      id: this.maxConditionalId++,
+      id: ++this.maxConditionalId,
       if: this.emptyConditionalOperatorObj,
       then: this.emptyConditionalOperatorObj,
       else: this.emptyConditionalOperatorObj,
