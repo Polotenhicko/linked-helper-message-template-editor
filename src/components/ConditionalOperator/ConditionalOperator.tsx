@@ -42,14 +42,16 @@ export function ConditionalOperator({
 
   const handleFirstChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    setFirstValue(value);
     conditionalOperator.firstText = value;
+    setFirstValue(value);
+    setChangesNotSaved();
   };
 
   const handleSecondChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    setSecondValue(value);
     conditionalOperator.secondText = value;
+    setSecondValue(value);
+    setChangesNotSaved();
   };
 
   const handleClickDeleteButton = () => {

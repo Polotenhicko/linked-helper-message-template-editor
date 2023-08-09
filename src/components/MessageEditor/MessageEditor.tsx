@@ -48,7 +48,17 @@ export function MessageEditor({
     setIsLastChangesSaved(false);
   };
 
+  const handleConfirmClose = (): boolean => {
+    if (!isLastChangesSaved) {
+      return window.confirm('Вы не сохранили изменения! Вы действиельной хотите выйти?');
+    }
+
+    return true;
+  };
+
   const handleClose = () => {
+    if (!handleConfirmClose()) return;
+    templateService.clearTemplate();
     onClose();
   };
 
