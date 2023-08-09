@@ -1,8 +1,11 @@
 .actionPanel {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
+  margin: 0 auto;
   margin-top: auto;
+  max-width: 600px;
+  width: 100%;
 }
 
 .actionButton {
@@ -10,4 +13,14 @@
   align-items: center;
   column-gap: 5px;
   color: #fff;
+}
+
+.savingButton {
+  background-color: #990000;
+  transition: all 0.4s ease;
+}
+
+.savingButton.saved {
+  background-color: #00c853;
+  color: #333;
 }

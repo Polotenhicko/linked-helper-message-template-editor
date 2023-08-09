@@ -4,7 +4,7 @@ import { TArrVarNames } from '../VarNameList/VarNameList';
 import { useEffect, useRef, useState } from 'react';
 import { InsertConditionalBlock } from '../InsertConditionalBlock';
 import { TextArea } from '../../controls/TextArea';
-import templateService, { IConditionalBlock, ITemplate } from '../../services/template.service';
+import templateService, { ITemplate } from '../../services/template.service';
 import styles from './MessageEditor.module.css';
 import { useObserverService } from '../../hooks/useObserverService';
 import { TCallbackSave } from '../../App';
@@ -139,6 +139,7 @@ export function MessageEditor({
             onSaveTemplate={handleSaveTemplate}
             onClose={handleClose}
             onShowMessagePreview={onShowMessagePreview}
+            isLastChangesSaved={isLastChangesSaved}
           />
         </div>
       </div>
