@@ -1,8 +1,8 @@
 {
-  "name": "linked-helper-message-template-editor",
-  "homepage": "https://polotenhicko.github.io/linked-helper-message-template-editor/",
+  "name": "message-template-editor",
+  "homepage": "https://polotenhicko.github.io/message-template-editor/",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@svgr/webpack": "^8.0.1",
     "@testing-library/jest-dom": "^5.17.0",
