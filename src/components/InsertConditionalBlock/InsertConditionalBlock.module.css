@@ -1,6 +1,7 @@
 .button {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   column-gap: 5px;
   background-image: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
   color: #333;

@@ -57,10 +57,12 @@ export function ConditionalOperator({
   const handleClickDeleteButton = () => {
     if (parentId === undefined || !parentOperator) {
       templateService.deleteConditionalBlock(id);
+      setChangesNotSaved();
       return;
     }
 
     templateService.deleteConditionalBlock(id, { id: parentId, operator: parentOperator });
+    setChangesNotSaved();
   };
 
   return (
