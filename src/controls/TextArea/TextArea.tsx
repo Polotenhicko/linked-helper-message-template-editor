@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './TextArea.module.css';
 import { TSetLastFocusedInput } from '../../components/MessageEditor/MessageEditor';

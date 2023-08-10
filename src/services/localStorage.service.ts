@@ -1,4 +1,4 @@
-class LocalStorage {
+class LocalStorageService {
   public getItem(key: string) {
     try {
       const value = localStorage.getItem(key);
@@ -20,4 +20,6 @@ class LocalStorage {
   }
 }
 
-export default new LocalStorage();
+const localStorageService = new LocalStorageService();
+
+export default localStorageService;

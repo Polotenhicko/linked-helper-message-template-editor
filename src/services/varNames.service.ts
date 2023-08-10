@@ -35,4 +35,6 @@ class VarNamesService {
   private baseVarNames: TVarNames = ['firstname', 'lastname', 'company', 'position'];
 }
 
-export default new VarNamesService();
+const varNamesService = new VarNamesService();
+
+export default varNamesService;

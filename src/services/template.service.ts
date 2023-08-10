@@ -245,4 +245,6 @@ class TemplateService extends ObserverService {
   }
 }
 
-export default new TemplateService();
+const templateService = new TemplateService();
+
+export default templateService;

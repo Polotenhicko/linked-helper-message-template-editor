@@ -22,8 +22,8 @@
 }
 
 .savingButton.saved {
-  background-color: #00c853;
-  color: #333;
+  background-color: #008a39;
+  color: #fff;
 }
 
 @media (max-width: 450px) {

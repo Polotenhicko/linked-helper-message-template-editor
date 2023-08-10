@@ -11,5 +11,5 @@ export function useObserverService(service: ISubject) {
     return () => {
       service.unsubscribe(refresh);
     };
-  }, [refresh]);
+  }, [refresh, service]);
 }

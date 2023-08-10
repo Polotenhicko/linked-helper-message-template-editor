@@ -10,6 +10,7 @@ import { useObserverService } from '../../hooks/useObserverService';
 import { TCallbackSave } from '../../App';
 import { ActionPanel } from '../ActionPanel';
 import { ConditionalBlockList } from '../ConditionalBlockList';
+import { DialogSaveChanges } from '../DialogSaveChanges';
 
 interface IMessageEditorProps {
   onClose: () => void;
@@ -39,6 +40,7 @@ export function MessageEditor({
   const [startMessage, setStartMessage] = useState(sample.startMessage);
   const [finalMessage, setfinalMessage] = useState(sample.finalMessage);
   const [isLastChangesSaved, setIsLastChangesSaved] = useState(true);
+  const [showDialogSave, setShowDialogSave] = useState(false);
 
   const [isRendered, setIsRendered] = useState(false);
 
@@ -50,16 +52,12 @@ export function MessageEditor({
     setIsLastChangesSaved(false);
   };
 
-  const handleConfirmClose = (): boolean => {
+  const handleClose = () => {
     if (!isLastChangesSaved) {
-      return window.confirm('Вы не сохранили изменения! Вы действиельной хотите выйти?');
+      setShowDialogSave(true);
+      return;
     }
 
-    return true;
-  };
-
-  const handleClose = () => {
-    if (!handleConfirmClose()) return;
     templateService.clearTemplate();
     onClose();
   };
@@ -112,10 +110,14 @@ export function MessageEditor({
     sample.finalMessage = val;
   };
 
-  const handleSaveTemplate = () => {
-    callbackSave().then(() => {
+  const handleSaveTemplate = async (): Promise<void> => {
+    return callbackSave().then(() => {
       setIsLastChangesSaved(true);
     });
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialogSave(false);
   };
 
   const modalStyle = {
@@ -150,6 +152,7 @@ export function MessageEditor({
           />
         </div>
       </div>
+      {showDialogSave && <DialogSaveChanges onSave={handleSaveTemplate} onCloseDialog={handleCloseDialog} />}
     </Modal>
   );
 }

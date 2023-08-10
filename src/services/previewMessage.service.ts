@@ -6,15 +6,11 @@ interface IVarNamesObj {
   [key: string]: string;
 }
 
-class PreviewMessage extends ObserverService {
+class PreviewMessageService extends ObserverService {
   public getMessage(): string {
     if (!this.template) return '';
 
     const message = this.generateMessage(this.template, this.varNames);
-
-    if (message === this.lastMessage) return message;
-
-    this.lastMessage = message;
 
     return message;
   }
@@ -33,7 +29,6 @@ class PreviewMessage extends ObserverService {
     this.template = template;
   }
 
-  private lastMessage: string = '';
   private varNames: IVarNamesObj = {};
   private template: ITemplate | null = null;
 
@@ -94,4 +89,6 @@ class PreviewMessage extends ObserverService {
   }
 }
 
-export default new PreviewMessage();
+const previewMessageService = new PreviewMessageService();
+
+export default previewMessageService;

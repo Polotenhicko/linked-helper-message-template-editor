@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import styles from './Modal.module.css';
 import { createPortal } from 'react-dom';
 
 interface IModalProps {

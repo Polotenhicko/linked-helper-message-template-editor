@@ -27,7 +27,7 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
     previewMessageService.setVariables(arrVarNames, sample);
     setMessage(previewMessageService.getMessage());
     setIsRendered(true);
-  }, []);
+  }, [arrVarNames, sample]);
 
   useObserverService(previewMessageService);
 
