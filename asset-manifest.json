@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/message-template-editor/static/css/main.74b73287.css",
-    "main.js": "/message-template-editor/static/js/main.1989b161.js",
+    "main.css": "/message-template-editor/static/css/main.6567d996.css",
+    "main.js": "/message-template-editor/static/js/main.00ca0a28.js",
     "static/media/close.svg": "/message-template-editor/static/media/close.f362d9b19befa378f44ea0901a7ea157.svg",
     "index.html": "/message-template-editor/index.html",
     "static/media/trashBucket.svg": "/message-template-editor/static/media/trashBucket.462e23f540db709a660edc8099a8f13c.svg",
     "static/media/cross.svg": "/message-template-editor/static/media/cross.d6061db30eb2943dcd0d3f84d0359c05.svg",
     "static/media/canvas.svg": "/message-template-editor/static/media/canvas.6e0671fca12c021512ae79f65cc93f97.svg",
     "static/media/check.svg": "/message-template-editor/static/media/check.ffedad04f810fdfce30ac7eb5be62762.svg",
-    "main.74b73287.css.map": "/message-template-editor/static/css/main.74b73287.css.map",
-    "main.1989b161.js.map": "/message-template-editor/static/js/main.1989b161.js.map"
+    "main.6567d996.css.map": "/message-template-editor/static/css/main.6567d996.css.map",
+    "main.00ca0a28.js.map": "/message-template-editor/static/js/main.00ca0a28.js.map"
   },
   "entrypoints": [
-    "static/css/main.74b73287.css",
-    "static/js/main.1989b161.js"
+    "static/css/main.6567d996.css",
+    "static/js/main.00ca0a28.js"
   ]
 }
