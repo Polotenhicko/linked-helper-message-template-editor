@@ -78,14 +78,14 @@ class PreviewMessageService extends ObserverService {
         }
       }
 
-      return result.filter((resultBlock) => resultBlock).join('\n');
+      return result.filter((resultBlock) => resultBlock).join('');
     };
 
     const stringConditionalBlocks = getCompiledConditionalBlocks(template.conditionalBlocks);
     const startMessage = this.getReplacedVariables(template.startMessage, values);
     const finalMessage = this.getReplacedVariables(template.finalMessage, values);
 
-    return startMessage + '\n' + stringConditionalBlocks + '\n' + finalMessage;
+    return startMessage + stringConditionalBlocks + finalMessage;
   }
 }
 
