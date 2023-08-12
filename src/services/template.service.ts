@@ -110,6 +110,8 @@ class TemplateService extends ObserverService {
     const { id, operator } = blockInfo;
 
     const currentConditionalBlock = this.findConditionalBlock(id);
+    console.log(currentConditionalBlock);
+
     if (!currentConditionalBlock) return false;
 
     const conditionalOperatorObj = currentConditionalBlock[operator];

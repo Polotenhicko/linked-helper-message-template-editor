@@ -10,39 +10,48 @@ import { useObserverService } from '../../hooks/useObserverService';
 import { TCallbackSave } from '../../App';
 import { ActionPanel } from '../ActionPanel';
 import { ConditionalBlockList } from '../ConditionalBlockList';
-import { DialogSaveChanges } from '../DialogSaveChanges';
+import { CloseDialog } from '../CloseDialog';
+import { MessagePreview } from '../MessagePreview';
 
 interface IMessageEditorProps {
-  onClose: () => void;
   arrVarNames: TArrVarNames;
-  template: ITemplate;
+  template?: ITemplate;
   callbackSave: TCallbackSave;
-  onShowMessagePreview: () => void;
+  onClose: () => void;
 }
 
 export type TOnClickVarName = (varName: string) => void;
 
 export type TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => void;
 
-export function MessageEditor({
-  onClose,
-  arrVarNames,
-  template: sample,
-  callbackSave,
-  onShowMessagePreview,
-}: IMessageEditorProps) {
+export function MessageEditor({ onClose, arrVarNames, template: sample, callbackSave }: IMessageEditorProps) {
   const lastFocusedInput = useRef<HTMLTextAreaElement | null>(null);
   const firstInput = useRef<HTMLTextAreaElement>(null);
   const messageEditorRef = useRef<HTMLDivElement>(null);
 
   useObserverService(templateService);
 
-  const [startMessage, setStartMessage] = useState(sample.startMessage);
-  const [finalMessage, setfinalMessage] = useState(sample.finalMessage);
+  const template = sample ? sample : templateService.getTemplate();
+
+  const [isOpenMessagePreview, setIsOpenMessagePreview] = useState(false);
+  const [startMessage, setStartMessage] = useState(template.startMessage);
+  const [finalMessage, setfinalMessage] = useState(template.finalMessage);
   const [isLastChangesSaved, setIsLastChangesSaved] = useState(true);
-  const [showDialogSave, setShowDialogSave] = useState(false);
+  const [showCloseDialog, setShowCloseDialog] = useState(false);
 
   const [isRendered, setIsRendered] = useState(false);
+
+  useEffect(() => {
+    // Block scroll when show modal
+    document.body.style.overflow = 'hidden';
+
+    setIsRendered(true);
+    console.log();
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
 
   const setLastFocusedInput: TSetLastFocusedInput = (ref: HTMLTextAreaElement | null) => {
     lastFocusedInput.current = ref;
@@ -52,12 +61,21 @@ export function MessageEditor({
     setIsLastChangesSaved(false);
   };
 
-  const handleClose = () => {
-    if (!isLastChangesSaved) {
-      setShowDialogSave(true);
-      return;
-    }
+  const handleOpenCloseDialog = () => {
+    setShowCloseDialog(true);
+  };
 
+  const handleEndCloseDialog = () => {
+    setShowCloseDialog(false);
+  };
+
+  const handleAttemptToClose = () => {
+    if (!isLastChangesSaved) {
+      handleOpenCloseDialog();
+    }
+  };
+
+  const handleClose = () => {
     templateService.clearTemplate();
     onClose();
   };
@@ -70,20 +88,9 @@ export function MessageEditor({
 
     // Если клик был сделан не внутри компонента
     if (!messageEditorRef.current.contains(e.target)) {
-      handleClose();
+      handleAttemptToClose();
     }
   };
-
-  useEffect(() => {
-    // Block scroll when show modal
-    document.body.style.overflow = 'hidden';
-
-    setIsRendered(true);
-
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
 
   const handleClickVarName: TOnClickVarName = (varName: string) => {
     const existLastFocusedInput = document.body.contains(lastFocusedInput.current);
@@ -100,14 +107,14 @@ export function MessageEditor({
     const val = e.target.value;
     setStartMessage(val);
     setChangesNotSaved();
-    sample.startMessage = val;
+    template.startMessage = val;
   };
 
   const handleChangeFinalMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setfinalMessage(val);
     setChangesNotSaved();
-    sample.finalMessage = val;
+    template.finalMessage = val;
   };
 
   const handleSaveTemplate = async (): Promise<void> => {
@@ -116,8 +123,12 @@ export function MessageEditor({
     });
   };
 
-  const handleCloseDialog = () => {
-    setShowDialogSave(false);
+  const handleCloseMessagePreview = () => {
+    setIsOpenMessagePreview(false);
+  };
+
+  const handleShowMessagePreview = () => {
+    setIsOpenMessagePreview(true);
   };
 
   const modalStyle = {
@@ -140,19 +151,22 @@ export function MessageEditor({
           />
           <ConditionalBlockList
             onFocusInput={setLastFocusedInput}
-            conditionalBlocks={sample.conditionalBlocks}
+            conditionalBlocks={template.conditionalBlocks}
             setChangesNotSaved={setChangesNotSaved}
           />
           <TextArea onFocusInput={setLastFocusedInput} onChange={handleChangeFinalMessage} value={finalMessage} />
           <ActionPanel
             onSaveTemplate={handleSaveTemplate}
             onClose={handleClose}
-            onShowMessagePreview={onShowMessagePreview}
+            onShowMessagePreview={handleShowMessagePreview}
             isLastChangesSaved={isLastChangesSaved}
           />
         </div>
       </div>
-      {showDialogSave && <DialogSaveChanges onSave={handleSaveTemplate} onCloseDialog={handleCloseDialog} />}
+      {isOpenMessagePreview && (
+        <MessagePreview arrVarNames={arrVarNames} template={template} onClose={handleCloseMessagePreview} />
+      )}
+      {showCloseDialog && <CloseDialog onCloseMessageEditor={handleClose} onCloseDialog={handleEndCloseDialog} />}
     </Modal>
   );
 }

@@ -31,7 +31,6 @@ class PreviewMessageService {
   public clearVariables(): void {
     this.valuesStorage.clear();
     this.template = null;
-    this.arrVarNames.length = 0;
   }
 
   public generateMessage(template: ITemplate, values: IVarNamesObj, arrVarNames?: TArrVarNames): string {

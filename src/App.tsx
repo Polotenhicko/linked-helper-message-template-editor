@@ -3,20 +3,18 @@ import { MessageEditor } from './components/MessageEditor';
 import { Button } from './controls/Button';
 import varNamesService from './services/varNames.service';
 import templateService from './services/template.service';
-import { MessagePreview } from './components/MessagePreview';
 
 export type TCallbackSave = () => Promise<void>;
 
 export function App() {
-  const arrVarNames = varNamesService.getVarNames();
   const callbackSave = async () => {
     templateService.saveTemplate();
   };
 
   const [isOpenMessageEditor, setIsOpenMessageEditor] = useState(false);
-  const [isOpenMessagePreview, setIsOpenMessagePreview] = useState(false);
 
   const template = templateService.getTemplate();
+  const arrVarNames = varNamesService.getVarNames();
 
   const openMessageEditor = () => {
     setIsOpenMessageEditor(true);
@@ -24,14 +22,6 @@ export function App() {
 
   const closeMessageEditor = () => {
     setIsOpenMessageEditor(false);
-  };
-
-  const openMessagePreview = () => {
-    setIsOpenMessagePreview(true);
-  };
-
-  const closeMessagePreview = () => {
-    setIsOpenMessagePreview(false);
   };
 
   return (
@@ -43,11 +33,7 @@ export function App() {
           arrVarNames={arrVarNames}
           template={template}
           callbackSave={callbackSave}
-          onShowMessagePreview={openMessagePreview}
         />
-      )}
-      {isOpenMessagePreview && (
-        <MessagePreview arrVarNames={arrVarNames} template={template} onClose={closeMessagePreview} />
       )}
     </>
   );

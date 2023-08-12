@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Modal } from '../Modal';
-import styles from './DialogSaveChanges.module.css';
+import styles from './CloseDialog.module.css';
 import { Button } from '../../controls/Button';
 import { cn } from '../../utils/cn';
 
-interface DialogSaveChangesProps {
+interface CloseDialogProps {
   onCloseDialog: () => void;
-  onSave: () => Promise<void>;
+  onCloseMessageEditor: () => void;
 }
 
-export function DialogSaveChanges({ onCloseDialog, onSave }: DialogSaveChangesProps) {
+export function CloseDialog({ onCloseDialog, onCloseMessageEditor }: CloseDialogProps) {
   const dialogElRef = useRef<HTMLDivElement>(null);
 
   const [isRendered, setisRendered] = useState(false);
@@ -25,11 +25,6 @@ export function DialogSaveChanges({ onCloseDialog, onSave }: DialogSaveChangesPr
     }
   };
 
-  const handleClickSave = () => {
-    onSave();
-    onCloseDialog();
-  };
-
   useEffect(() => {
     setisRendered(true);
   }, []);
@@ -38,12 +33,12 @@ export function DialogSaveChanges({ onCloseDialog, onSave }: DialogSaveChangesPr
     <Modal>
       <div className={styles.modal} onClick={handleClickOutsideModal}>
         <div className={styles.dialog} style={{ opacity: isRendered ? 1 : 0 }} ref={dialogElRef}>
-          <div className={styles.title}>You haven't saved your changes! Are you sure you want to leave?</div>
+          <div className={styles.title}>You haven't saved your changes! Are you sure want to leave?</div>
           <div className={styles.buttonList}>
-            <Button className={cn(styles.agree, styles.button)} onClick={handleClickSave}>
+            <Button className={cn(styles.disagree, styles.button)} onClick={onCloseMessageEditor}>
               Yes
             </Button>
-            <Button className={cn(styles.disagree, styles.button)} onClick={onCloseDialog}>
+            <Button className={cn(styles.agree, styles.button)} onClick={onCloseDialog}>
               No
             </Button>
           </div>
