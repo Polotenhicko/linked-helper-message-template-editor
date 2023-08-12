@@ -6,7 +6,6 @@ import { ReactComponent as CloseSvg } from '../../assets/icons/close.svg';
 import { PreviewVariableList } from '../PreviewVariableList';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Button } from '../../controls/Button';
-import { useObserverService } from '../../hooks/useObserverService';
 import previewMessageService from '../../services/previewMessage.service';
 
 interface IMessagePreviewProps {
@@ -24,12 +23,14 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
   const [isRendered, setIsRendered] = useState(false);
 
   useLayoutEffect(() => {
-    previewMessageService.setVariables(arrVarNames, sample);
-    setMessage(previewMessageService.getMessage());
     setIsRendered(true);
-  }, [arrVarNames, sample]);
+    previewMessageService.setVariables(sample, arrVarNames);
+    setMessage(previewMessageService.getMessage());
 
-  useObserverService(previewMessageService);
+    return () => {
+      previewMessageService.clearVariables();
+    };
+  }, []);
 
   const handleClose = () => {
     onClose();
@@ -45,9 +46,8 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
   };
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target;
-    previewMessageService.setVarNames(target.name, target.value);
-    setMessage(previewMessageService.getMessage());
+    const { name, value } = e.target;
+    setMessage(previewMessageService.getMessage({ name, value }));
   };
 
   const modalStyle = {
