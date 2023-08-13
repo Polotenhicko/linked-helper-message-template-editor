@@ -48,7 +48,8 @@
   padding: 10px;
   color: #000;
   flex-shrink: 0;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
   user-select: all;
 }
 
