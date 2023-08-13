@@ -1,0 +1,14 @@
+.status {
+  font-size: 18px;
+  font-weight: 700;
+  color: #990000;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 5px;
+}
+
+.saved {
+  color: #008a39;
+}

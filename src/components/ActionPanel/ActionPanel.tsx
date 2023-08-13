@@ -1,10 +1,10 @@
 import styles from './ActionPanel.module.css';
 import { Button } from '../../controls/Button';
 import { ReactComponent as CanvasSvg } from '../../assets/icons/canvas.svg';
-import { ReactComponent as CheckSvg } from '../../assets/icons/check.svg';
 import { ReactComponent as CloseSvg } from '../../assets/icons/close.svg';
-import { ReactComponent as CrossSvg } from '../../assets/icons/cross.svg';
+import { ReactComponent as SaveSvg } from '../../assets/icons/save.svg';
 import { cn } from '../../utils/cn';
+import { SaveStatus } from '../SaveStatus';
 
 interface IActionPanelProps {
   onSaveTemplate: () => void;
@@ -19,35 +19,23 @@ export function ActionPanel({
   onShowMessagePreview,
   isLastChangesSaved,
 }: IActionPanelProps) {
-  const classNameBtnLastSaves = cn({
-    [styles.actionButton]: true,
-    [styles.savingButton]: true,
-    [styles.saved]: isLastChangesSaved,
-  });
-
-  const buttonSave = isLastChangesSaved ? (
-    <>
-      <CheckSvg /> Saved
-    </>
-  ) : (
-    <>
-      <CrossSvg /> Not saved
-    </>
-  );
-
   return (
     <div className={styles.actionPanel}>
-      <Button className={styles.actionButton} onClick={onShowMessagePreview}>
-        <CanvasSvg />
-        Preview
-      </Button>
-      <Button className={classNameBtnLastSaves} onClick={onSaveTemplate}>
-        {buttonSave}
-      </Button>
-      <Button className={styles.actionButton} onClick={onClose}>
-        <CloseSvg />
-        Close
-      </Button>
+      <SaveStatus isLastChangesSaved={isLastChangesSaved} />
+      <div className={styles.buttonList}>
+        <Button className={styles.actionButton} onClick={onShowMessagePreview}>
+          <CanvasSvg />
+          Preview
+        </Button>
+        <Button className={cn(styles.actionButton, styles.savingButton)} onClick={onSaveTemplate}>
+          <SaveSvg />
+          Save
+        </Button>
+        <Button className={styles.actionButton} onClick={onClose}>
+          <CloseSvg />
+          Close
+        </Button>
+      </div>
     </div>
   );
 }

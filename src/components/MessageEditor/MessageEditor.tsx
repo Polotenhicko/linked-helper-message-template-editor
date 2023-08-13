@@ -2,7 +2,7 @@ import { Modal } from '../Modal';
 import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
 import { useEffect, useRef, useState } from 'react';
-import { InsertConditionalBlock } from '../InsertConditionalBlock';
+import { AddConditionalBlock } from '../AddConditionalBlock';
 import { TextArea } from '../../controls/TextArea';
 import templateService, { ITemplate } from '../../services/template.service';
 import styles from './MessageEditor.module.css';
@@ -158,8 +158,7 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
-          <InsertConditionalBlock setChangesNotSaved={setChangesNotSaved} lastFocusedInput={lastFocusedInput} />
-
+          <AddConditionalBlock setChangesNotSaved={setChangesNotSaved} lastFocusedInput={lastFocusedInput} />
           <TextArea
             onFocusInput={setLastFocusedInput}
             onChange={handleChangeStartMessage}

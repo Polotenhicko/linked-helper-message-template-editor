@@ -1,13 +1,13 @@
 import { Button } from '../../controls/Button';
 import templateService from '../../services/template.service';
-import styles from './InsertConditionalBlock.module.css';
+import styles from './AddConditionalBlock.module.css';
 
-interface IInsertConditionalBlockProps {
+interface IAddConditionalBlockProps {
   setChangesNotSaved: () => void;
   lastFocusedInput: React.RefObject<HTMLTextAreaElement | null>;
 }
 
-export function InsertConditionalBlock({ setChangesNotSaved, lastFocusedInput }: IInsertConditionalBlockProps) {
+export function AddConditionalBlock({ setChangesNotSaved, lastFocusedInput }: IAddConditionalBlockProps) {
   const handleAddConditionalBlock = () => {
     const lastFocus = lastFocusedInput.current;
     // may be input was focused, but now is deleted from html
