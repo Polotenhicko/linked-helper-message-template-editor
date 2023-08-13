@@ -7,11 +7,13 @@ interface IVarNameItem {
 }
 
 export function VarNameItem({ varName, onClick }: IVarNameItem) {
+  // wrap the string in brackets
   const templateString = `{${varName}}`;
 
   const handleClick = () => {
     onClick(templateString);
   };
+
   return (
     <li className={styles.varNameItem} onClick={handleClick}>
       {templateString}

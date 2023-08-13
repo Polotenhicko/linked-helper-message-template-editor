@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ISubject } from '../services/observer.service';
 
-export function useObserverService(service: ISubject) {
+// custom hook to subscribe component
+export function useObserverService(service: ISubject): void {
   const [, forceUpdate] = useState<object>({});
   const refresh = useCallback(() => forceUpdate({}), []);
 

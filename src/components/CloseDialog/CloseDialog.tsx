@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Modal } from '../Modal';
 import styles from './CloseDialog.module.css';
 import { Button } from '../../controls/Button';
@@ -15,17 +15,19 @@ export function CloseDialog({ onCloseDialog, onCloseMessageEditor }: CloseDialog
   const [isRendered, setisRendered] = useState(false);
 
   const handleClickOutsideModal = (e: React.MouseEvent<Node>) => {
+    // if current does not exist, then return
     if (!dialogElRef.current) return;
+    // narrow down the type to Node
     if (!(e.target instanceof Node)) return;
 
-    const dialogEl = dialogElRef.current;
-
-    if (!dialogEl.contains(e.target)) {
+    // handler click to indicate click past the modal
+    if (!dialogElRef.current.contains(e.target)) {
       onCloseDialog();
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // force update to animate
     setisRendered(true);
   }, []);
 

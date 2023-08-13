@@ -4,14 +4,19 @@ import localStorageService from './localStorage.service';
 
 type TVarNames = string[];
 
+// service for arrVarNames
+
 class VarNamesService {
+  // get arrVarNames from localStorage
   public getVarNames(): TVarNames {
     const varNames = localStorageService.getItem(LOCAL_STORAGE_ARR_VAR_NAMES_KEY);
 
+    // check is correct model
     const isCorrectModel = this.checkCorrectModel(varNames);
 
     if (!isCorrectModel) {
       console.error('Incorrect varnames model!', varNames);
+      // is correct model, and set base model into localstorage
       this.setBaseVarNames();
       return this.baseVarNames;
     }
@@ -26,13 +31,16 @@ class VarNamesService {
   private checkCorrectModel(varNames: any): boolean {
     if (!Array.isArray(varNames)) return false;
 
+    // check if there are no strings
     const incorrectVarName = varNames.some((varName) => !isString(varName));
     if (incorrectVarName) return false;
 
     return true;
   }
 
-  private baseVarNames: TVarNames = ['firstname', 'lastname', 'company', 'position'];
+  private get baseVarNames(): TVarNames {
+    return ['firstname', 'lastname', 'company', 'position'];
+  }
 }
 
 const varNamesService = new VarNamesService();

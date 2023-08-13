@@ -7,14 +7,18 @@ export interface IValueInfo {
   value: string;
 }
 
+// took the function out of the service according to technical requirements
+
 class PreviewMessageService {
   public getMessage(valueInfo?: IValueInfo): string {
     if (!this.template) return '';
 
+    // set pairs name, value to valuesStorage
     if (valueInfo) {
       this.valuesStorage.set(valueInfo.name, valueInfo.value);
     }
 
+    // get object {name: value} from storage
     const values = Object.fromEntries(this.valuesStorage.entries());
 
     return generateMessage(this.template, values, this.arrVarNames);
@@ -30,6 +34,7 @@ class PreviewMessageService {
     this.template = null;
   }
 
+  // valuesStorage for memory pairs
   private valuesStorage = new Map<string, string>();
   private template: ITemplate | null = null;
   private arrVarNames: TArrVarNames = [];

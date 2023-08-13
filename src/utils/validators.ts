@@ -1,3 +1,5 @@
+// some value type validators
+
 export const isObject = (val: any): boolean => {
   // not null
   if (!val) return false;

@@ -30,10 +30,13 @@ export function ConditionalOperator({
   const [secondValue, setSecondValue] = useState(conditionalOperator.secondText);
 
   const { conditionalBlocks } = conditionalOperator;
+  // if has conditional blocks, then render textarea with secondValue
   const withConditionalBlock = !!conditionalBlocks.length;
   const isIfOperator = operator === 'if';
 
   useLayoutEffect(() => {
+    // glue secondValue to firstValue in conditional operator after delete nested conditional blocks in operator
+    // setState in secondValue to '' and firstValue to firstText from conditional operator
     if (conditionalOperator.secondText === '' && conditionalOperator.firstText !== '') {
       setFirstValue(conditionalOperator.firstText);
       setSecondValue('');
@@ -41,26 +44,32 @@ export function ConditionalOperator({
   }, [conditionalOperator.secondText, conditionalOperator.firstText]);
 
   const handleFirstChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // after change input, set value from input to conditional operator and setFirstValue
     const value = e.target.value;
     conditionalOperator.firstText = value;
     setFirstValue(value);
+    // user update teplate and not saved
     setChangesNotSaved();
   };
 
   const handleSecondChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // after change input, set value from input to conditional operator and setFirstValue
     const value = e.target.value;
     conditionalOperator.secondText = value;
     setSecondValue(value);
+    // user update teplate and not saved
     setChangesNotSaved();
   };
 
   const handleClickDeleteButton = () => {
+    // if parent does not exist, then delete block in first arr conditional blocks
     if (parentId === undefined || !parentOperator) {
       templateService.deleteConditionalBlock(id);
       setChangesNotSaved();
       return;
     }
 
+    // else insert parentInfo
     templateService.deleteConditionalBlock(id, { id: parentId, operator: parentOperator });
     setChangesNotSaved();
   };

@@ -1,13 +1,15 @@
 export type TObserver = () => void;
 
+// simple observer service by observer pattern
+
 export interface ISubject {
-  // Присоединяет наблюдателя к издателю.
+  // subscribe observer to subject
   subscribe(observer: TObserver): void;
 
-  // Отсоединяет наблюдателя от издателя.
+  // unsubscrive observer from subject
   unsubscribe(observer: TObserver): void;
 
-  // Уведомляет всех наблюдателей о событии.
+  // notify all observers about event
   notify(): void;
 }
 

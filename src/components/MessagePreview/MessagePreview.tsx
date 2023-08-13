@@ -23,23 +23,29 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
   const [isRendered, setIsRendered] = useState(false);
 
   useLayoutEffect(() => {
+    // forceUpdate to start animation
     setIsRendered(true);
+    // set variables for service
     previewMessageService.setVariables(sample, arrVarNames);
+    // set initial message
     setMessage(previewMessageService.getMessage());
 
     return () => {
       previewMessageService.clearVariables();
     };
-  }, []);
+  }, [sample, arrVarNames]);
 
   const handleClose = () => {
     onClose();
   };
 
   const handleClickOutsideModal = (e: React.MouseEvent<Node>) => {
+    // if current does not exist, then return
     if (!messagePreviewRef.current) return;
+    // narrow down the type to Node
     if (!(e.target instanceof Node)) return;
 
+    // handler click to indicate click past the modal
     if (!messagePreviewRef.current.contains(e.target)) {
       handleClose();
     }
@@ -50,13 +56,15 @@ export function MessagePreview({ arrVarNames, template: sample, onClose }: IMess
     setMessage(previewMessageService.getMessage({ name, value }));
   };
 
-  const modalStyle = {
-    opacity: isRendered ? 1 : 0,
-  };
-
   return (
     <Modal>
-      <div className={styles.modal} onClick={handleClickOutsideModal} style={modalStyle}>
+      <div
+        className={styles.modal}
+        onClick={handleClickOutsideModal}
+        style={{
+          opacity: isRendered ? 1 : 0,
+        }}
+      >
         <div className={styles.messagePreview} ref={messagePreviewRef}>
           <h2 className={styles.title}>Message Preview</h2>
           <div className={styles.message}>{message}</div>

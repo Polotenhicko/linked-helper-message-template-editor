@@ -1,3 +1,4 @@
+// simple localstorage service
 class LocalStorageService {
   public getItem(key: string) {
     try {

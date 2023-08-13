@@ -10,6 +10,7 @@ interface IPreviewVariable {
 
 export function PreviewVariable({ varName, onChangeInput }: IPreviewVariable) {
   const [value, setValue] = useState('');
+
   const handleChangeVariable = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
     onChangeInput(e);

@@ -29,6 +29,7 @@ li {
   align-items: center;
 }
 
+/* words IF THEN ELSE stroke */
 .conditionalStroke {
   background-color: green;
   color: #fff;

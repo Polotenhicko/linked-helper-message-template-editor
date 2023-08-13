@@ -19,12 +19,14 @@ export function TextArea({
   onChange,
   ...other
 }: ITextAreaProps) {
-  const classNames = cn(styles.textarea, className);
   const [minHeight, setMinHeight] = useState<null | number>(null);
+
+  const classNames = cn(styles.textarea, className);
 
   let ref = useRef<HTMLTextAreaElement>(null);
   if (textAreaRef) ref = textAreaRef;
 
+  // auto resize
   useLayoutEffect(() => {
     if (!autoResize) return;
     if (!ref || !ref.current) return;
@@ -33,28 +35,32 @@ export function TextArea({
     const textAreaEl = ref.current;
     const { offsetHeight, clientHeight } = textAreaEl;
 
-    // set height 0, for after set scrollHeight
-
     textAreaEl.style.height = '0';
 
+    // set height 0, to install later scrollHeight
     if (!minHeight) {
-      // Первый ввод текста, сохраняем минимальную высоту, чтобы textarea не прыгала
+      // First text input, save minimum height so textarea doesn't jump
       const currentHeight = offsetHeight;
       textAreaEl.style.height = currentHeight + 5 + 'px';
       setMinHeight(currentHeight);
     } else {
-      // leftHeight необходим, т.к. scrollHeight с минимальной высотой == clientHeight
+      // leftHeight is needed because scrollHeight with min-height == clientHeight
       const leftHeight = offsetHeight - clientHeight;
       const currentHeight = textAreaEl.scrollHeight - leftHeight;
       textAreaEl.style.height = (currentHeight < minHeight ? minHeight : currentHeight) + 5 + 'px';
     }
   });
 
+  // disable repeat key according to the terms of reference
   const handleKeyDownRepeat = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (other.onKeyDown) other.onKeyDown(e);
+
+    // other than these buttons
     const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
     if (e.repeat && !allowedKeys.includes(e.key)) e.preventDefault();
   };
 
+  // set lastFocused input to current element
   const handleOnFocus = () => {
     if (!onFocusInput) return;
     if (!ref || !ref.current) return;

@@ -1,4 +1,3 @@
-import { useLayoutEffect, useRef, useState } from 'react';
 import { IConditionalBlock } from '../../services/template.service';
 import { ConditionalOperator } from '../ConditionalOperator';
 import { TSetLastFocusedInput } from '../MessageEditor/MessageEditor';
@@ -12,6 +11,8 @@ interface IConditionalBlockProps {
   parentOperator?: 'if' | 'then' | 'else';
 }
 
+type TOperators = ['if', 'then', 'else'];
+
 export function ConditionalBlock({
   onFocusInput,
   conditionalBlock,
@@ -19,14 +20,12 @@ export function ConditionalBlock({
   parentId,
   parentOperator,
 }: IConditionalBlockProps) {
-  const conditionalBlockRef = useRef<HTMLDivElement>(null);
-
   if (!conditionalBlock) return null;
 
-  const operators: ['if', 'then', 'else'] = ['if', 'then', 'else'];
+  const operators: TOperators = ['if', 'then', 'else'];
 
   return (
-    <div className={styles.conditionalBlock} ref={conditionalBlockRef}>
+    <div className={styles.conditionalBlock}>
       {operators.map((operator, i) => (
         <ConditionalOperator
           onFocusInput={onFocusInput}

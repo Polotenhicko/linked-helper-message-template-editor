@@ -10,21 +10,23 @@ interface IInsertConditionalBlockProps {
 export function InsertConditionalBlock({ setChangesNotSaved, lastFocusedInput }: IInsertConditionalBlockProps) {
   const handleAddConditionalBlock = () => {
     const lastFocus = lastFocusedInput.current;
-
+    // may be input was focused, but now is deleted from html
     const isRemovedInput = !document.body.contains(lastFocus);
 
     const id: number | null = lastFocus?.dataset.id ? Number(lastFocus.dataset.id) : null;
     const operator: string | null = lastFocus?.dataset.operator ? lastFocus.dataset.operator : null;
 
+    // if id or operator is null or last focused input was deleted
     const isAddConditionalBlockToStart = !id || !operator || isRemovedInput;
-
+    // then add empty conditional block into first arr conditional blocks
     if (isAddConditionalBlockToStart) {
       templateService.addEmptyConditionalBlock();
+      // template was updated
       setChangesNotSaved();
 
       return;
     }
-
+    // checking the operator that it is valid
     switch (operator) {
       case 'if':
       case 'then':
@@ -35,6 +37,7 @@ export function InsertConditionalBlock({ setChangesNotSaved, lastFocusedInput }:
         return;
     }
 
+    // template was updated
     setChangesNotSaved();
   };
 
