@@ -784,6 +784,4 @@ describe('generateMessage: ', () => {
       expect(generateMessage(template, values, arrVarNames)).toBe('Hello! else, nested then, else continue Bye!');
     });
   });
-
-  describe('replace in if', () => {});
 });

@@ -31,7 +31,7 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
 
   useObserverService(templateService);
 
-  const template = sample ? sample : templateService.getTemplate();
+  const template = sample ?? templateService.getTemplate();
 
   const [isOpenMessagePreview, setIsOpenMessagePreview] = useState(false);
   const [startMessage, setStartMessage] = useState(template.startMessage);

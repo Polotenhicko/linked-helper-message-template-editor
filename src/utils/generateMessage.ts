@@ -11,7 +11,7 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
     if (!arrVarNames) return text;
 
     for (const varName of arrVarNames) {
-      const value = values[varName] ? values[varName] : '';
+      const value = values[varName] ?? '';
       text = text.split(`{${varName}}`).join(value);
     }
 
