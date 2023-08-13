@@ -69,15 +69,17 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
     setShowCloseDialog(false);
   };
 
-  const handleAttemptToClose = () => {
-    if (!isLastChangesSaved) {
-      handleOpenCloseDialog();
-    }
-  };
-
   const handleClose = () => {
     templateService.clearTemplate();
     onClose();
+  };
+
+  const handleAttemptToClose = () => {
+    if (!isLastChangesSaved) {
+      handleOpenCloseDialog();
+    } else {
+      handleClose();
+    }
   };
 
   const handleClickOutsideModal = (e: React.MouseEvent<Node>) => {
@@ -157,7 +159,7 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
           <TextArea onFocusInput={setLastFocusedInput} onChange={handleChangeFinalMessage} value={finalMessage} />
           <ActionPanel
             onSaveTemplate={handleSaveTemplate}
-            onClose={handleClose}
+            onClose={handleAttemptToClose}
             onShowMessagePreview={handleShowMessagePreview}
             isLastChangesSaved={isLastChangesSaved}
           />

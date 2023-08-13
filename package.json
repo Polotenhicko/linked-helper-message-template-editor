@@ -24,7 +24,8 @@
     "build": "react-scripts build",
     "dev": "npm run start",
     "deploy": "npm run build && gh-pages -d build",
-    "component": "node ./scripts/createComponentPattern.js"
+    "component": "node ./scripts/createComponentPattern.js",
+    "test": "react-scripts test --coverage"
   },
   "eslintConfig": {
     "extends": [
