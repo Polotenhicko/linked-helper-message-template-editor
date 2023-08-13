@@ -3,7 +3,6 @@ import { VarNameList } from '../VarNameList';
 import { TArrVarNames } from '../VarNameList/VarNameList';
 import { useEffect, useRef, useState } from 'react';
 import { AddConditionalBlock } from '../AddConditionalBlock';
-import { TextArea } from '../../controls/TextArea';
 import templateService, { ITemplate } from '../../services/template.service';
 import styles from './MessageEditor.module.css';
 import { useObserverService } from '../../hooks/useObserverService';
@@ -12,6 +11,8 @@ import { ActionPanel } from '../ActionPanel';
 import { ConditionalBlockList } from '../ConditionalBlockList';
 import { CloseDialog } from '../CloseDialog';
 import { MessagePreview } from '../MessagePreview';
+import { StartMessage } from '../StartMessage';
+import { FinalMessage } from '../FinalMessage';
 
 interface IMessageEditorProps {
   arrVarNames: TArrVarNames;
@@ -36,8 +37,6 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
   const template = sample ?? templateService.getTemplate();
 
   const [isOpenMessagePreview, setIsOpenMessagePreview] = useState(false);
-  const [startMessage, setStartMessage] = useState(template.startMessage);
-  const [finalMessage, setfinalMessage] = useState(template.finalMessage);
   const [isLastChangesSaved, setIsLastChangesSaved] = useState(true);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
 
@@ -117,20 +116,6 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
     }
   };
 
-  const handleChangeStartMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = e.target.value;
-    setStartMessage(val);
-    setChangesNotSaved();
-    template.startMessage = val;
-  };
-
-  const handleChangeFinalMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = e.target.value;
-    setfinalMessage(val);
-    setChangesNotSaved();
-    template.finalMessage = val;
-  };
-
   // callbacksave handler
   // async, to able to add handler after saving
   const handleSaveTemplate = async (): Promise<void> => {
@@ -159,18 +144,22 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
           <AddConditionalBlock setChangesNotSaved={setChangesNotSaved} lastFocusedInput={lastFocusedInput} />
-          <TextArea
+          <StartMessage
             onFocusInput={setLastFocusedInput}
-            onChange={handleChangeStartMessage}
-            value={startMessage}
-            textAreaRef={firstInput}
+            firstInputRef={firstInput}
+            template={template}
+            setChangesNotSaved={setChangesNotSaved}
           />
           <ConditionalBlockList
             onFocusInput={setLastFocusedInput}
             conditionalBlocks={template.conditionalBlocks}
             setChangesNotSaved={setChangesNotSaved}
           />
-          <TextArea onFocusInput={setLastFocusedInput} onChange={handleChangeFinalMessage} value={finalMessage} />
+          <FinalMessage
+            onFocusInput={setLastFocusedInput}
+            template={template}
+            setChangesNotSaved={setChangesNotSaved}
+          />
           <ActionPanel
             onSaveTemplate={handleSaveTemplate}
             onClose={handleAttemptToClose}
