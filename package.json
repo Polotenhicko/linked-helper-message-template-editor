@@ -25,7 +25,7 @@
     "dev": "npm run start",
     "deploy": "npm run build && gh-pages -d build",
     "component": "node ./scripts/createComponentPattern.js",
-    "test": "react-scripts test --coverage"
+    "test": "react-scripts test --coverage --findRelatedTests src/tests/generateMessage.test.ts"
   },
   "eslintConfig": {
     "extends": [
