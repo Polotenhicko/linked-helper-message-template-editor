@@ -1,18 +1,19 @@
 {
   "files": {
-    "main.css": "/message-template-editor/static/css/main.b2086c54.css",
-    "main.js": "/message-template-editor/static/js/main.45e4b076.js",
+    "main.css": "/message-template-editor/static/css/main.a8210a32.css",
+    "main.js": "/message-template-editor/static/js/main.6acd79a7.js",
     "static/media/close.svg": "/message-template-editor/static/media/close.f362d9b19befa378f44ea0901a7ea157.svg",
     "index.html": "/message-template-editor/index.html",
+    "static/media/save.svg": "/message-template-editor/static/media/save.73b7238f6067aeec47ab5b221f47f82c.svg",
     "static/media/trashBucket.svg": "/message-template-editor/static/media/trashBucket.462e23f540db709a660edc8099a8f13c.svg",
     "static/media/cross.svg": "/message-template-editor/static/media/cross.d6061db30eb2943dcd0d3f84d0359c05.svg",
     "static/media/canvas.svg": "/message-template-editor/static/media/canvas.6e0671fca12c021512ae79f65cc93f97.svg",
     "static/media/check.svg": "/message-template-editor/static/media/check.ffedad04f810fdfce30ac7eb5be62762.svg",
-    "main.b2086c54.css.map": "/message-template-editor/static/css/main.b2086c54.css.map",
-    "main.45e4b076.js.map": "/message-template-editor/static/js/main.45e4b076.js.map"
+    "main.a8210a32.css.map": "/message-template-editor/static/css/main.a8210a32.css.map",
+    "main.6acd79a7.js.map": "/message-template-editor/static/js/main.6acd79a7.js.map"
   },
   "entrypoints": [
-    "static/css/main.b2086c54.css",
-    "static/js/main.45e4b076.js"
+    "static/css/main.a8210a32.css",
+    "static/js/main.6acd79a7.js"
   ]
 }
