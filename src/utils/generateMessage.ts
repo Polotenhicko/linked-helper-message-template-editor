@@ -19,7 +19,6 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
     const regex = /{([^{}]+)}/g;
 
     const replacedText = text.replace(regex, (_, variable) => {
-      console.log(_, variable);
       if (arrVarNames.includes(variable)) {
         return values[variable] ?? '';
       }

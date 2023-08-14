@@ -144,7 +144,11 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
         <div className={styles.messageEditor} ref={messageEditorRef}>
           <h2 className={styles.title}>Message Template Editor</h2>
           <VarNameList arrVarNames={arrVarNames} onClickVarName={handleClickVarName} />
-          <AddConditionalBlock setChangesNotSaved={setChangesNotSaved} lastFocusedInput={lastFocusedInput} />
+          <AddConditionalBlock
+            setChangesNotSaved={setChangesNotSaved}
+            lastFocusedInput={lastFocusedInput}
+            firstInput={firstInput}
+          />
           <StartMessage
             onFocusInput={setLastFocusedInput}
             firstInputRef={firstInput}

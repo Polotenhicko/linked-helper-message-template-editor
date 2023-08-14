@@ -77,6 +77,12 @@ class TemplateService extends ObserverService {
     if (!parent) {
       // delete block from first conditional blocks
       const isSuccessDelete = this.deleteConditionalBlockFromArr(id, this.template.conditionalBlocks);
+      // if does not have conditional blocks, then cut out finalMessage in startMessage
+      if (!this.template.conditionalBlocks.length) {
+        this.template.startMessage += this.template.finalMessage;
+        this.template.finalMessage = '';
+      }
+
       // update components
       this.notify();
 
@@ -98,7 +104,7 @@ class TemplateService extends ObserverService {
     // if operator does not have any block and secondText is not empty
     if (!parentOperatorObj.conditionalBlocks.length && parentOperatorObj.secondText) {
       // glue secondText for firstText and clear secondText
-      parentOperatorObj.firstText += '\n' + parentOperatorObj.secondText;
+      parentOperatorObj.firstText += parentOperatorObj.secondText;
       parentOperatorObj.secondText = '';
     }
 
@@ -112,36 +118,87 @@ class TemplateService extends ObserverService {
   }
 
   // add empty conditional block to block by blockInfo, else to first conditionalBlocks
-  public addEmptyConditionalBlock(blockInfo?: { id: number; operator: 'if' | 'then' | 'else' }): boolean {
+  public addEmptyConditionalBlock(
+    firstInput: HTMLTextAreaElement,
+    lastFocusedInput: HTMLTextAreaElement | null
+  ): boolean {
     const { template } = this;
 
     if (!template) return false;
 
-    if (!blockInfo) {
-      // add empty conditional block to first arr conditonalBlocks
+    const isLastFocusedInput = !!lastFocusedInput;
+    const input = isLastFocusedInput ? lastFocusedInput : firstInput;
+
+    // get id and operator, if it is lastFocused and has this data
+    const id: number | null = input.dataset.id ? Number(input.dataset.id) : null;
+    const operator: string | null = input.dataset.operator ? input.dataset.operator : null;
+
+    // firstInput and lastInput does not have id and operator
+    const isAddToFirstInput = id === null || !operator;
+
+    if (isAddToFirstInput) {
+      // first conditionalBlocks have blocks or its firstInput
+      // then dont need to slice startMessage
+      if (template.conditionalBlocks.length || !isLastFocusedInput) {
+        template.conditionalBlocks.push(this.emptyConditionalBlock);
+        this.notify();
+        return true;
+      }
+
       template.conditionalBlocks.push(this.emptyConditionalBlock);
-      // update components
+
+      // get cursorPosition and text after cursor
+      const cursorPosition = input.selectionStart;
+      const textAfterCursor = template.startMessage.slice(cursorPosition);
+      // cut out text after cursor and connected them to finalMessage
+      template.startMessage = template.startMessage.slice(0, cursorPosition);
+      template.finalMessage = textAfterCursor;
+
       this.notify();
 
       return true;
+    } else {
+      // get current block by id
+      const currentConditionalBlock = this.findConditionalBlock(id);
+      if (!currentConditionalBlock) return false;
+
+      for (const [key] of Object.entries(currentConditionalBlock)) {
+        switch (key) {
+          case 'if':
+          case 'then':
+          case 'else':
+            if (key === operator) {
+              // get operator obj by operator string
+              const conditionalOperatorObj = currentConditionalBlock[key];
+              // if obj has any conditional blocks, then dont need to slice firstText
+              if (conditionalOperatorObj.conditionalBlocks.length) {
+                conditionalOperatorObj.conditionalBlocks.push(this.emptyConditionalBlock);
+                this.notify();
+                return true;
+              }
+
+              conditionalOperatorObj.conditionalBlocks.push(this.emptyConditionalBlock);
+
+              // get cursor position and text after cursor
+              const cursorPosition = input.selectionStart;
+              const textAfterCursor = conditionalOperatorObj.firstText.slice(cursorPosition);
+              // cut out text after cursor and set it to secondText
+              conditionalOperatorObj.firstText = conditionalOperatorObj.firstText.slice(0, cursorPosition);
+              conditionalOperatorObj.secondText = textAfterCursor;
+
+              this.notify();
+
+              return true;
+            }
+
+            break;
+          default:
+            break;
+        }
+      }
     }
 
-    const { id, operator } = blockInfo;
-
-    // find current conditionalBlock
-    const currentConditionalBlock = this.findConditionalBlock(id);
-
-    if (!currentConditionalBlock) return false;
-
-    // get operator
-    const conditionalOperatorObj = currentConditionalBlock[operator];
-
-    // push empty conditional block
-    conditionalOperatorObj.conditionalBlocks.push(this.emptyConditionalBlock);
-    // update components
-    this.notify();
-
-    return true;
+    return false;
   }
 
   // delete nested conditional blocks to free memory

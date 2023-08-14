@@ -35,13 +35,11 @@ export function ConditionalOperator({
   const isIfOperator = operator === 'if';
 
   useLayoutEffect(() => {
-    // glue secondValue to firstValue in conditional operator after delete nested conditional blocks in operator
-    // setState in secondValue to '' and firstValue to firstText from conditional operator
-    if (conditionalOperator.secondText === '' && conditionalOperator.firstText !== '') {
-      setFirstValue(conditionalOperator.firstText);
-      setSecondValue('');
-    }
-  }, [conditionalOperator.secondText, conditionalOperator.firstText]);
+    // set first and second value from template when appears and disappears conditional blocks in operator
+    // cause after adding or removing, may be that firstText will be cut out for second text
+    setFirstValue(conditionalOperator.firstText);
+    setSecondValue(conditionalOperator.secondText);
+  }, [!!conditionalOperator.conditionalBlocks.length]);
 
   const handleFirstChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // after change input, set value from input to conditional operator and setFirstValue
