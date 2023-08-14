@@ -116,6 +116,17 @@ describe('generateMessage: ', () => {
       arrVarNames = ['firstname', 'lastname'];
       expect(generateMessage(template, values, arrVarNames)).toBe('Hello firstname lastname!\nBye Bill Gates!');
     });
+
+    it('variable in brackets like other variable', () => {
+      template = {
+        startMessage: 'Hello {firstname}!\n',
+        finalMessage: 'Bye {lastname}!',
+        conditionalBlocks: [],
+      };
+      values = { firstname: '{lastname}', lastname: 'Gates' };
+      arrVarNames = ['firstname', 'lastname'];
+      expect(generateMessage(template, values, arrVarNames)).toBe('Hello {lastname}!\nBye Gates!');
+    });
   });
 
   describe('test conditional: ', () => {

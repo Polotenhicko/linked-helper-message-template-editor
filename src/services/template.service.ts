@@ -250,7 +250,7 @@ class TemplateService extends ObserverService {
 
   // get empty template
   private get emptyTemplate(): ITemplate {
-    return { startMessage: '', finalMessage: '', conditionalBlocks: [this.emptyConditionalBlock] };
+    return { startMessage: '', finalMessage: '', conditionalBlocks: [] };
   }
 
   // get empty conditional block with auto increment maxCondditionalId

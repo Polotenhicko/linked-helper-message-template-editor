@@ -16,13 +16,17 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
     if (!text) return '';
     if (!arrVarNames) return text;
 
-    // replace only variables in arrVarNames
-    for (const varName of arrVarNames) {
-      const value = values[varName] ?? '';
-      text = text.split(`{${varName}}`).join(value);
-    }
+    const regex = /{([^{}]+)}/g;
 
-    return text;
+    const replacedText = text.replace(regex, (_, variable) => {
+      console.log(_, variable);
+      if (arrVarNames.includes(variable)) {
+        return values[variable] ?? '';
+      }
+      return _;
+    });
+
+    return replacedText;
   };
 
   // compile IF-block and nested conditional block into boolen if exist
