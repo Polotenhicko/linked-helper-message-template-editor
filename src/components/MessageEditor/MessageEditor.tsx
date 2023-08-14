@@ -31,6 +31,7 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
   const firstInput = useRef<HTMLTextAreaElement>(null);
   const messageEditorRef = useRef<HTMLDivElement>(null);
 
+  // subscribe to notify
   useObserverService(templateService);
 
   // get sample from props, or getTemplate from service

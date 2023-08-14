@@ -17,6 +17,7 @@ export function TextArea({
   textAreaRef,
   autoResize = true,
   onChange,
+  onKeyDown,
   ...other
 }: ITextAreaProps) {
   const [minHeight, setMinHeight] = useState<null | number>(null);
@@ -51,15 +52,6 @@ export function TextArea({
     }
   });
 
-  // disable repeat key according to the terms of reference
-  const handleKeyDownRepeat = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (other.onKeyDown) other.onKeyDown(e);
-
-    // other than these buttons
-    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
-    if (e.repeat && !allowedKeys.includes(e.key)) e.preventDefault();
-  };
-
   // set lastFocused input to current element
   const handleOnFocus = () => {
     if (!onFocusInput) return;
@@ -72,7 +64,7 @@ export function TextArea({
     <textarea
       className={classNames}
       onChange={onChange}
-      onKeyDown={handleKeyDownRepeat}
+      onKeyDown={onKeyDown}
       ref={ref}
       onFocus={handleOnFocus}
       {...other}
