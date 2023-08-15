@@ -30,11 +30,15 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
 
   // compile IF-block and nested conditional block into boolen if exist
   const getCompiledIfBlock = (ifBlock: IConditionalOperatorObj): boolean => {
-    const firstText = getReplacedVariables(ifBlock.firstText);
-    const secondText = getReplacedVariables(ifBlock.secondText);
+    const startMessage = getReplacedVariables(ifBlock.startMessage);
 
-    // if exist firstText or secondText, then IF-block is true
-    if (firstText || secondText) return true;
+    // if exist startMessage , then IF-block is true
+    if (startMessage) return true;
+
+    // if some conditional blocks have any text in finalMessage, then true
+    for (const block of ifBlock.conditionalBlocks) {
+      if (block.finalMessage) return true;
+    }
 
     // compile nested conditional blocks into string
     const stringsConditionalBlocks = getCompiledConditionalBlocks(ifBlock.conditionalBlocks);
@@ -47,13 +51,12 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
 
   // then and else block is similar, that`s why one method
   const getCompiledThenElseBlock = (thenElseBlock: IConditionalOperatorObj): string => {
-    const firstText = getReplacedVariables(thenElseBlock.firstText);
-    const secondText = getReplacedVariables(thenElseBlock.secondText);
+    const startMessage = getReplacedVariables(thenElseBlock.startMessage);
 
     // compile nested conditional blocks to text
     const stringConditionalBlocks = getCompiledConditionalBlocks(thenElseBlock.conditionalBlocks);
 
-    return firstText + stringConditionalBlocks + secondText;
+    return startMessage + stringConditionalBlocks;
   };
 
   // compile conditional block to string
@@ -64,12 +67,14 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
     for (const block of conditionalBlocks) {
       // check IF-block
       const isTrueConditional = getCompiledIfBlock(block.if);
+      // compile finalMessage
+      const finalMessage = getReplacedVariables(block.finalMessage);
 
       // if IF-block is true, then push compiled THEN-block, otherwise ELSE-block
       if (isTrueConditional) {
-        result.push(getCompiledThenElseBlock(block.then));
+        result.push(getCompiledThenElseBlock(block.then) + finalMessage);
       } else {
-        result.push(getCompiledThenElseBlock(block.else));
+        result.push(getCompiledThenElseBlock(block.else) + finalMessage);
       }
     }
 
@@ -77,10 +82,9 @@ export function generateMessage(template: ITemplate, values: IVarNamesObj, arrVa
     return result.join('');
   };
 
-  // first compile startMessage, finalMessage, and conditionalBlocks into string
-  const stringConditionalBlocks = getCompiledConditionalBlocks(template.conditionalBlocks);
+  // first compile startMessage and conditionalBlocks into string
   const startMessage = getReplacedVariables(template.startMessage);
-  const finalMessage = getReplacedVariables(template.finalMessage);
+  const stringConditionalBlocks = getCompiledConditionalBlocks(template.conditionalBlocks);
 
-  return startMessage + stringConditionalBlocks + finalMessage;
+  return startMessage + stringConditionalBlocks;
 }

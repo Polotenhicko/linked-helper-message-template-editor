@@ -9,21 +9,21 @@ describe('generateMessage: ', () => {
 
   describe('test replacing variables', () => {
     it('empty text', () => {
-      template = { startMessage: '', finalMessage: '', conditionalBlocks: [] };
+      template = { startMessage: '', conditionalBlocks: [] };
       values = {};
       arrVarNames = [];
       expect(generateMessage(template, values, arrVarNames)).toBe('');
     });
 
     it('undefined arrVarNames', () => {
-      template = { startMessage: 'Hello!', finalMessage: ' Bye!', conditionalBlocks: [] };
+      template = { startMessage: 'Hello! Bye!', conditionalBlocks: [] };
       values = {};
       arrVarNames = [];
       expect(generateMessage(template, values)).toBe('Hello! Bye!');
     });
 
     it('empty values', () => {
-      template = { startMessage: 'Hello!\n', finalMessage: 'Bye!', conditionalBlocks: [] };
+      template = { startMessage: 'Hello!\nBye!', conditionalBlocks: [] };
       values = {};
       arrVarNames = [];
       expect(generateMessage(template, values, arrVarNames)).toBe('Hello!\nBye!');
@@ -31,8 +31,7 @@ describe('generateMessage: ', () => {
 
     it('empty pairs', () => {
       template = {
-        startMessage: 'Hello {firstname}!\n',
-        finalMessage: 'Bye {firstname}!',
+        startMessage: 'Hello {firstname}!\nBye {firstname}!',
         conditionalBlocks: [],
       };
       values = {};
@@ -42,8 +41,7 @@ describe('generateMessage: ', () => {
 
     it('extra pairs', () => {
       template = {
-        startMessage: 'Hello {firstname}!\n',
-        finalMessage: 'Bye {firstname}!',
+        startMessage: 'Hello {firstname}!\nBye {firstname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill' };
@@ -53,8 +51,7 @@ describe('generateMessage: ', () => {
 
     it('not empty firstname', () => {
       template = {
-        startMessage: 'Hello {firstname}!\n',
-        finalMessage: 'Bye {firstname}!',
+        startMessage: 'Hello {firstname}!\nBye {firstname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill' };
@@ -64,8 +61,7 @@ describe('generateMessage: ', () => {
 
     it('not empty variable and empty variable in arr', () => {
       template = {
-        startMessage: 'Hello {firstname} {lastname}!\n',
-        finalMessage: 'Bye {firstname} {lastname}!',
+        startMessage: 'Hello {firstname} {lastname}!\nBye {firstname} {lastname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill', lastname: 'Gates' };
@@ -75,8 +71,7 @@ describe('generateMessage: ', () => {
 
     it('not empty firstname and empty lastname in arr', () => {
       template = {
-        startMessage: 'Hello {firstname} {lastname}!\n',
-        finalMessage: 'Bye {firstname} {lastname}!',
+        startMessage: 'Hello {firstname} {lastname}!\nBye {firstname} {lastname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill', lastname: 'Gates' };
@@ -86,8 +81,7 @@ describe('generateMessage: ', () => {
 
     it('double not empty variable', () => {
       template = {
-        startMessage: 'Hello {firstname} {lastname}!\n',
-        finalMessage: 'Bye {firstname} {lastname}!',
+        startMessage: 'Hello {firstname} {lastname}!\nBye {firstname} {lastname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill', lastname: 'Gates' };
@@ -97,8 +91,7 @@ describe('generateMessage: ', () => {
 
     it('nested variable in text', () => {
       template = {
-        startMessage: 'Hello {last{firstname}name}!\n',
-        finalMessage: 'Bye {firstname} {lastname}!',
+        startMessage: 'Hello {last{firstname}name}!\nBye {firstname} {lastname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill', lastname: 'Gates' };
@@ -108,8 +101,7 @@ describe('generateMessage: ', () => {
 
     it('variable wothout brackets', () => {
       template = {
-        startMessage: 'Hello firstname lastname!\n',
-        finalMessage: 'Bye {firstname} {lastname}!',
+        startMessage: 'Hello firstname lastname!\nBye {firstname} {lastname}!',
         conditionalBlocks: [],
       };
       values = { firstname: 'Bill', lastname: 'Gates' };
@@ -119,8 +111,7 @@ describe('generateMessage: ', () => {
 
     it('variable in brackets like other variable', () => {
       template = {
-        startMessage: 'Hello {firstname}!\n',
-        finalMessage: 'Bye {lastname}!',
+        startMessage: 'Hello {firstname}!\nBye {lastname}!',
         conditionalBlocks: [],
       };
       values = { firstname: '{lastname}', lastname: 'Gates' };
@@ -132,8 +123,7 @@ describe('generateMessage: ', () => {
   describe('test conditional: ', () => {
     it('empty conditional', () => {
       template = {
-        startMessage: 'Hello!\n',
-        finalMessage: 'Bye!',
+        startMessage: 'Hello!\nBye!',
         conditionalBlocks: [],
       };
       values = {};
@@ -144,25 +134,22 @@ describe('generateMessage: ', () => {
     it('true conditional', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
             if: {
-              firstText: '1',
-              secondText: '',
+              startMessage: '1',
               conditionalBlocks: [],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
+            finalMessage: 'Bye!',
           },
         ],
       };
@@ -174,23 +161,37 @@ describe('generateMessage: ', () => {
     it('true conditional in second text', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: '',
-              secondText: '1',
-              conditionalBlocks: [],
+              startMessage: '',
+              conditionalBlocks: [
+                {
+                  id: 2,
+                  if: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  then: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  else: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  finalMessage: '1',
+                },
+              ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -204,23 +205,20 @@ describe('generateMessage: ', () => {
     it('false conditional', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -234,23 +232,20 @@ describe('generateMessage: ', () => {
     it('true conditional with space', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: ' ',
-              secondText: '',
+              startMessage: ' ',
               conditionalBlocks: [],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -266,42 +261,37 @@ describe('generateMessage: ', () => {
     it('nested true if', () => {
       template = {
         startMessage: 'Hello! ',
-        finalMessage: ' Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: ' Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: '',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: 'then',
-                    secondText: '',
+                    startMessage: 'then',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: 'else',
-                    secondText: '',
+                    startMessage: 'else',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -312,45 +302,116 @@ describe('generateMessage: ', () => {
       expect(generateMessage(template, values, arrVarNames)).toBe('Hello! then Bye!');
     });
 
-    it('nested true if with firsttext', () => {
+    it('parallel text in conditional block', () => {
       template = {
         startMessage: 'Hello! ',
-        finalMessage: ' Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: ' Bye!',
             if: {
-              firstText: 'true',
-              secondText: '',
+              startMessage: 'true',
+              conditionalBlocks: [],
+            },
+            then: {
+              startMessage: 'then',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: 'final1 ',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                },
+                {
+                  id: 3,
+                  finalMessage: 'final2 ',
+                  if: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  then: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  else: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                },
+                {
+                  id: 4,
+                  finalMessage: 'final3 ',
+                  if: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  then: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  else: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                },
+              ],
+            },
+            else: {
+              startMessage: 'else',
+              conditionalBlocks: [],
+            },
+          },
+        ],
+      };
+      values = {};
+      arrVarNames = [];
+      expect(generateMessage(template, values, arrVarNames)).toBe('Hello! thenfinal1 final2 final3  Bye!');
+    });
+
+    it('nested true if with startMessage', () => {
+      template = {
+        startMessage: 'Hello! ',
+        conditionalBlocks: [
+          {
+            id: 1,
+            finalMessage: ' Bye!',
+            if: {
+              startMessage: 'true',
+              conditionalBlocks: [
+                {
+                  id: 2,
+                  finalMessage: '',
+                  if: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  then: {
+                    startMessage: '',
+                    conditionalBlocks: [],
+                  },
+                  else: {
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -364,42 +425,37 @@ describe('generateMessage: ', () => {
     it('nested true if with secondtext', () => {
       template = {
         startMessage: 'Hello! ',
-        finalMessage: ' Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: ' Bye!',
             if: {
-              firstText: '',
-              secondText: 'true',
+              startMessage: '',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: 'true',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -413,42 +469,37 @@ describe('generateMessage: ', () => {
     it('nested false if', () => {
       template = {
         startMessage: 'Hello! ',
-        finalMessage: ' Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: ' Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: '',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -462,61 +513,54 @@ describe('generateMessage: ', () => {
     it('deep nested true if', () => {
       template = {
         startMessage: 'Hello! ',
-        finalMessage: ' Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: ' Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: '',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [
                       {
                         id: 3,
+                        finalMessage: '',
                         if: {
-                          firstText: '2',
-                          secondText: '',
+                          startMessage: '2',
                           conditionalBlocks: [],
                         },
                         then: {
-                          firstText: 'then2',
-                          secondText: '',
+                          startMessage: 'then2',
                           conditionalBlocks: [],
                         },
                         else: {
-                          firstText: 'else2',
-                          secondText: '',
+                          startMessage: 'else2',
                           conditionalBlocks: [],
                         },
                       },
                     ],
                   },
                   then: {
-                    firstText: 'then1',
-                    secondText: '',
+                    startMessage: 'then1',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: 'else1',
-                    secondText: '',
+                    startMessage: 'else1',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -530,61 +574,54 @@ describe('generateMessage: ', () => {
     it('deep nested false if', () => {
       template = {
         startMessage: 'Hello! ',
-        finalMessage: ' Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: ' Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: '',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [
                       {
                         id: 3,
+                        finalMessage: '',
                         if: {
-                          firstText: '2',
-                          secondText: '',
+                          startMessage: '2',
                           conditionalBlocks: [],
                         },
                         then: {
-                          firstText: '',
-                          secondText: '',
+                          startMessage: '',
                           conditionalBlocks: [],
                         },
                         else: {
-                          firstText: 'else2',
-                          secondText: '',
+                          startMessage: 'else2',
                           conditionalBlocks: [],
                         },
                       },
                     ],
                   },
                   then: {
-                    firstText: 'then1',
-                    secondText: '',
+                    startMessage: 'then1',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             then: {
-              firstText: 'then',
-              secondText: '',
+              startMessage: 'then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: 'else',
-              secondText: '',
+              startMessage: 'else',
               conditionalBlocks: [],
             },
           },
@@ -600,42 +637,37 @@ describe('generateMessage: ', () => {
     it('nested true conditional then', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: '1',
-              secondText: '',
+              startMessage: '1',
               conditionalBlocks: [],
             },
             then: {
-              firstText: ' then',
-              secondText: ', then continue ',
+              startMessage: ' then',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: ', then continue ',
                   if: {
-                    firstText: '1',
-                    secondText: '',
+                    startMessage: '1',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: ', nested then',
-                    secondText: '',
+                    startMessage: ', nested then',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             else: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [],
             },
           },
@@ -649,42 +681,37 @@ describe('generateMessage: ', () => {
     it('nested false conditional then', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: '1',
-              secondText: '',
+              startMessage: '1',
               conditionalBlocks: [],
             },
             then: {
-              firstText: ' then',
-              secondText: ', then continue ',
+              startMessage: ' then',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: ', then continue ',
                   if: {
-                    firstText: '',
-                    secondText: '',
+                    startMessage: '',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: ', nested then',
-                    secondText: '',
+                    startMessage: ', nested then',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: ', nested else',
-                    secondText: '',
+                    startMessage: ', nested else',
                     conditionalBlocks: [],
                   },
                 },
               ],
             },
             else: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [],
             },
           },
@@ -700,39 +727,34 @@ describe('generateMessage: ', () => {
     it('nested true conditional else', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [],
             },
             then: {
-              firstText: ' then',
-              secondText: ', then continue ',
+              startMessage: ' then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: ' else',
-              secondText: ', else continue ',
+              startMessage: ' else',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: ', else continue ',
                   if: {
-                    firstText: '1',
-                    secondText: '',
+                    startMessage: '1',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: ', nested then',
-                    secondText: '',
+                    startMessage: ', nested then',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: ', nested else',
-                    secondText: '',
+                    startMessage: ', nested else',
                     conditionalBlocks: [],
                   },
                 },
@@ -749,39 +771,34 @@ describe('generateMessage: ', () => {
     it('nested false conditional else', () => {
       template = {
         startMessage: 'Hello!',
-        finalMessage: 'Bye!',
         conditionalBlocks: [
           {
             id: 1,
+            finalMessage: 'Bye!',
             if: {
-              firstText: '',
-              secondText: '',
+              startMessage: '',
               conditionalBlocks: [],
             },
             then: {
-              firstText: ' then',
-              secondText: ', then continue ',
+              startMessage: ' then',
               conditionalBlocks: [],
             },
             else: {
-              firstText: ' else',
-              secondText: ', else continue ',
+              startMessage: ' else',
               conditionalBlocks: [
                 {
                   id: 2,
+                  finalMessage: ', else continue ',
                   if: {
-                    firstText: '1',
-                    secondText: '',
+                    startMessage: '1',
                     conditionalBlocks: [],
                   },
                   then: {
-                    firstText: ', nested then',
-                    secondText: '',
+                    startMessage: ', nested then',
                     conditionalBlocks: [],
                   },
                   else: {
-                    firstText: ', nested else',
-                    secondText: '',
+                    startMessage: ', nested else',
                     conditionalBlocks: [],
                   },
                 },

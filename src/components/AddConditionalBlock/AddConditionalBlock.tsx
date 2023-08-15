@@ -21,8 +21,8 @@ export function AddConditionalBlock({
 
     if (!firstInputEl) return;
 
-    templateService.addEmptyConditionalBlock(firstInputEl, lastFocusEl);
-    setChangesNotSaved();
+    const isSuccesAdd = templateService.addEmptyConditionalBlock(firstInputEl, lastFocusEl);
+    if (isSuccesAdd) setChangesNotSaved();
   };
 
   return (

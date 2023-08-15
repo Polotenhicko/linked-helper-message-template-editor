@@ -1,11 +1,12 @@
+import { ConditionalBlock } from '../components/ConditionalBlock';
 import { LOCAL_STORAGE_TEMPLATE_KEY } from '../constants/localStorage';
+import { getDataset } from '../utils/getDataset';
 import { isNumber, isObject, isString } from '../utils/validators';
 import localStorageService from './localStorage.service';
 import { ObserverService } from './observer.service';
 
 export interface IConditionalOperatorObj {
-  firstText: string;
-  secondText: string;
+  startMessage: string;
   conditionalBlocks: IConditionalBlock[];
 }
 
@@ -14,12 +15,12 @@ export interface IConditionalBlock {
   if: IConditionalOperatorObj;
   then: IConditionalOperatorObj;
   else: IConditionalOperatorObj;
+  finalMessage: string;
 }
 
 export interface ITemplate {
   startMessage: string;
   conditionalBlocks: IConditionalBlock[];
-  finalMessage: string;
 }
 
 // service for appeals template
@@ -75,45 +76,40 @@ class TemplateService extends ObserverService {
     if (!this.template) return false;
 
     if (!parent) {
-      // delete block from first conditional blocks
-      const isSuccessDelete = this.deleteConditionalBlockFromArr(id, this.template.conditionalBlocks);
-      // if does not have conditional blocks, then cut out finalMessage in startMessage
-      if (!this.template.conditionalBlocks.length) {
-        this.template.startMessage += this.template.finalMessage;
-        this.template.finalMessage = '';
+      // delete current block in template
+      const isSuccessDelete = this.deleteAndGluingConditionalBlocks(id, this.template);
+
+      if (!isSuccessDelete) {
+        return false;
       }
 
-      // update components
       this.notify();
-
-      return isSuccessDelete;
+      return true;
     }
 
-    // looking for parent block
+    // find parent conditional block
     const parentConditionalBlock = this.findConditionalBlock(parent.id);
-    if (!parentConditionalBlock) return false;
 
-    // looking for operator obj
-    const parentOperatorObj = parentConditionalBlock[parent.operator];
-    // if he is empty, then return false
-    if (!parentOperatorObj.conditionalBlocks.length) return false;
-    // delete conditionalBlock from arr
-    const isSuccessDelete = this.deleteConditionalBlockFromArr(id, parentOperatorObj.conditionalBlocks);
-    if (!isSuccessDelete) return false;
-
-    // if operator does not have any block and secondText is not empty
-    if (!parentOperatorObj.conditionalBlocks.length && parentOperatorObj.secondText) {
-      // glue secondText for firstText and clear secondText
-      parentOperatorObj.firstText += parentOperatorObj.secondText;
-      parentOperatorObj.secondText = '';
+    if (!parentConditionalBlock) {
+      console.error('Not found parent conditional block! Id:', parent.id);
+      return false;
     }
 
-    // delete remaining nested blocks
-    this.deleteNestedConditionalBlocksFromStorage(id);
+    // operator must be if or then or else
+    if (parent.operator !== 'if' && parent.operator !== 'then' && parent.operator !== 'else') {
+      console.error('Wrong parent operator!', parent.operator);
+      return false;
+    }
+    // get operator obj
+    const parentConditionalOperatorObj = parentConditionalBlock[parent.operator];
+    // delete current conditional block from operator
+    const isSuccessDelete = this.deleteAndGluingConditionalBlocks(id, parentConditionalOperatorObj);
 
-    // update components
+    if (!isSuccessDelete) {
+      return false;
+    }
+
     this.notify();
-
     return true;
   }
 
@@ -127,75 +123,97 @@ class TemplateService extends ObserverService {
     if (!template) return false;
 
     const isLastFocusedInput = !!lastFocusedInput;
-    const input = isLastFocusedInput ? lastFocusedInput : firstInput;
+    const isLastFocusedInputExist = document.body.contains(lastFocusedInput);
+    const input = isLastFocusedInput && isLastFocusedInputExist ? lastFocusedInput : firstInput;
 
-    // get id and operator, if it is lastFocused and has this data
-    const id: number | null = input.dataset.id ? Number(input.dataset.id) : null;
-    const operator: string | null = input.dataset.operator ? input.dataset.operator : null;
+    const isStartMessage = !!getDataset(input, 'startMessage');
+    const isFinalMessage = !!getDataset(input, 'finalMessage');
 
-    // firstInput and lastInput does not have id and operator
-    const isAddToFirstInput = id === null || !operator;
+    const cursorPosition = input.selectionStart;
 
-    if (isAddToFirstInput) {
-      // first conditionalBlocks have blocks or its firstInput
-      // then dont need to slice startMessage
-      if (template.conditionalBlocks.length || !isLastFocusedInput) {
-        template.conditionalBlocks.push(this.emptyConditionalBlock);
+    const id: number | null = getDataset(input, 'id') ? Number(getDataset(input, 'id')) : null;
+    const operator: string | null = getDataset(input, 'operator');
+
+    if (isStartMessage) {
+      if (id === null || !operator) {
+        // dont have id or operator, then is template.startMessage
+
+        this.addTextToStartMessage(cursorPosition, template);
+
         this.notify();
         return true;
       }
 
-      template.conditionalBlocks.push(this.emptyConditionalBlock);
+      // is startMessage in conditionalOperator obj
+      const currentConditionalBlock = this.findConditionalBlock(id);
+      if (!currentConditionalBlock) {
+        console.error('Current conditional block is not found!');
+        return false;
+      }
+      // only if, then, else
+      if (operator !== 'if' && operator !== 'then' && operator !== 'else') {
+        console.error('Wrong operator!');
+        return false;
+      }
 
-      // get cursorPosition and text after cursor
-      const cursorPosition = input.selectionStart;
-      const textAfterCursor = template.startMessage.slice(cursorPosition);
-      // cut out text after cursor and connected them to finalMessage
-      template.startMessage = template.startMessage.slice(0, cursorPosition);
-      template.finalMessage = textAfterCursor;
+      const currentConditionalOperatorObj = currentConditionalBlock[operator];
+
+      this.addTextToStartMessage(cursorPosition, currentConditionalOperatorObj);
 
       this.notify();
-
       return true;
-    } else {
-      // get current block by id
-      const currentConditionalBlock = this.findConditionalBlock(id);
-      if (!currentConditionalBlock) return false;
+    }
 
-      for (const [key] of Object.entries(currentConditionalBlock)) {
-        switch (key) {
-          case 'if':
-          case 'then':
-          case 'else':
-            if (key === operator) {
-              // get operator obj by operator string
-              const conditionalOperatorObj = currentConditionalBlock[key];
-              // if obj has any conditional blocks, then dont need to slice firstText
-              if (conditionalOperatorObj.conditionalBlocks.length) {
-                conditionalOperatorObj.conditionalBlocks.push(this.emptyConditionalBlock);
-                this.notify();
-                return true;
-              }
+    if (isFinalMessage) {
+      const parentId = getDataset(input, 'parentId') ? Number(getDataset(input, 'parentId')) : null;
+      const parentOperator: string | null = getDataset(input, 'parentOperator');
 
-              conditionalOperatorObj.conditionalBlocks.push(this.emptyConditionalBlock);
-
-              // get cursor position and text after cursor
-              const cursorPosition = input.selectionStart;
-              const textAfterCursor = conditionalOperatorObj.firstText.slice(cursorPosition);
-              // cut out text after cursor and set it to secondText
-              conditionalOperatorObj.firstText = conditionalOperatorObj.firstText.slice(0, cursorPosition);
-              conditionalOperatorObj.secondText = textAfterCursor;
-
-              this.notify();
-
-              return true;
-            }
-
-            break;
-          default:
-            break;
-        }
+      if (!id) {
+        console.error('Id is null!');
+        return false;
       }
+
+      if (!parentId || !parentOperator) {
+        // only template.conditionalBlocks does not have parentInfo
+        const currentIndex = template.conditionalBlocks.findIndex((block) => block.id === id);
+        if (!~currentIndex) {
+          console.error('Wrong currentIndex! Id:', id);
+          return false;
+        }
+
+        this.addTextToFinalMessage(cursorPosition, currentIndex, template.conditionalBlocks);
+
+        this.notify();
+        return true;
+      }
+      // need to find parent conditionalBlock
+      // to change nested conditionalBlocks
+      const parentConditionalBlock = this.findConditionalBlock(parentId);
+
+      if (!parentConditionalBlock) {
+        console.error('Not found parent conditional block!');
+        return false;
+      }
+
+      if (parentOperator !== 'if' && parentOperator !== 'then' && parentOperator !== 'else') {
+        console.error('Wrong parent operator!');
+        return false;
+      }
+      // will add new conditonalBlock to conditionalOperator arr conditionalBlocks
+      // by currentIndex
+      const conditionalParentOperatorObj = parentConditionalBlock[parentOperator];
+
+      const currentIndex = conditionalParentOperatorObj.conditionalBlocks.findIndex((block) => block.id === id);
+
+      if (!~currentIndex) {
+        console.error('Wrong currentIndex! Id:', id);
+        return false;
+      }
+
+      this.addTextToFinalMessage(cursorPosition, currentIndex, conditionalParentOperatorObj.conditionalBlocks);
+
+      this.notify();
+      return true;
     }
 
     return false;
@@ -204,8 +222,12 @@ class TemplateService extends ObserverService {
   // delete nested conditional blocks to free memory
   private deleteNestedConditionalBlocksFromStorage(id: number): void {
     // save reference to conditional block
+
     const currentConditionalBlock = this.findConditionalBlock(id);
-    if (!currentConditionalBlock) return;
+    if (!currentConditionalBlock) {
+      console.error('Not found current conditional block for nested delete. Id:', id);
+      return;
+    }
 
     // delete this block
     this.conditionalBlocksStorage.delete(id);
@@ -229,21 +251,61 @@ class TemplateService extends ObserverService {
     }
   }
 
-  // delete block from arr
-  private deleteConditionalBlockFromArr(id: number, parentArr: IConditionalBlock[]): boolean {
-    const currentIndex = parentArr.findIndex((block) => block.id === id);
+  private addTextToStartMessage(cursorPosition: number, obj: ITemplate | IConditionalOperatorObj) {
+    const textAfterCursor = obj.startMessage.slice(cursorPosition);
+    // set text after cursor to finalMessage in new conditional block
+    // and text before cursor to startMessage
+    obj.startMessage = obj.startMessage.slice(0, cursorPosition);
+    obj.conditionalBlocks.unshift(this.getEmptyConditionalBlock(textAfterCursor));
+  }
 
-    if (~currentIndex) {
-      parentArr.splice(currentIndex, 1);
-      return true;
+  private addTextToFinalMessage(
+    cursorPosition: number,
+    currentIndex: number,
+    conditionalBlocks: IConditionalBlock[]
+  ) {
+    const condtionalBlock = conditionalBlocks[currentIndex];
+    const textAfterCursor = condtionalBlock.finalMessage.slice(cursorPosition);
+    // set finalMessage to text before cursor
+    // and put empty conditional block after current index
+    // with text after cursor
+    condtionalBlock.finalMessage = condtionalBlock.finalMessage.slice(0, cursorPosition);
+    conditionalBlocks.splice(currentIndex + 1, 0, this.getEmptyConditionalBlock(textAfterCursor));
+  }
+
+  // delete block from arr
+  private deleteAndGluingConditionalBlocks(id: number, obj: IConditionalOperatorObj | ITemplate): boolean {
+    const currentIndex = obj.conditionalBlocks.findIndex((block) => block.id === id);
+    // check current index
+    if (!~currentIndex) {
+      console.error('Not found conditional block! Id:', id);
+      return false;
     }
 
-    return false;
+    const currentConditionalBlock = obj.conditionalBlocks[currentIndex];
+    const currentFinalMessage = currentConditionalBlock.finalMessage;
+    // delete current conditional block
+    obj.conditionalBlocks.splice(currentIndex, 1);
+
+    this.deleteNestedConditionalBlocksFromStorage(currentConditionalBlock.id);
+
+    if (currentIndex === 0) {
+      // that was first block
+      // so need add finalMessage from current conditional block to startMessage in obj
+      obj.startMessage += currentFinalMessage;
+    } else {
+      // get previously conditional block
+      // and add finalMessage from current conditional block to finalMessage in prev block
+      const prevConditionalBlock = obj.conditionalBlocks[currentIndex - 1];
+      prevConditionalBlock.finalMessage += currentFinalMessage;
+    }
+
+    return true;
   }
 
   // find block from storage
   private findConditionalBlock(id: number): IConditionalBlock | null {
-    if (!this.template || !this.template.conditionalBlocks.length) return null;
+    if (!this.template) return null;
 
     const currentConditionalBlock = this.conditionalBlocksStorage.get(id);
     if (!currentConditionalBlock) return null;
@@ -257,12 +319,9 @@ class TemplateService extends ObserverService {
     const isConditionalOperatorObj = (obj: any): boolean => {
       if (!isObject(obj)) return false;
 
-      if (!isString(obj.firstText)) return false;
-      if (!isString(obj.secondText)) return false;
+      if (!isString(obj.startMessage)) return false;
 
-      const { conditionalBlocks } = obj;
-
-      if (!isConditionalBlocks(conditionalBlocks)) return false;
+      if (!isConditionalBlocks(obj.conditionalBlocks)) return false;
 
       return true;
     };
@@ -274,6 +333,9 @@ class TemplateService extends ObserverService {
       for (const block of blocks) {
         if (!isNumber(block.id)) return false;
 
+        // validate finalMessage
+        if (!isString(block.finalMessage)) return false;
+
         // validate all operators
         if (!isConditionalOperatorObj(block.if)) return false;
         if (!isConditionalOperatorObj(block.then)) return false;
@@ -281,6 +343,7 @@ class TemplateService extends ObserverService {
 
         // if id is repeated, then is uncorrect model
         if (this.conditionalBlocksStorage.has(block.id)) return false;
+
         // set block in storage
         this.conditionalBlocksStorage.set(block.id, block);
       }
@@ -291,11 +354,10 @@ class TemplateService extends ObserverService {
     // template is object
     if (!isObject(template)) return false;
 
-    // startMessage & finalMessage is string
-    const { startMessage, finalMessage } = template;
-    if (!isString(startMessage) || !isString(finalMessage)) return false;
+    // startMessage is string
+    const { startMessage, conditionalBlocks } = template;
 
-    const { conditionalBlocks } = template;
+    if (!isString(startMessage)) return false;
 
     if (!isConditionalBlocks(conditionalBlocks)) return false;
 
@@ -307,16 +369,20 @@ class TemplateService extends ObserverService {
 
   // get empty template
   private get emptyTemplate(): ITemplate {
-    return { startMessage: '', finalMessage: '', conditionalBlocks: [] };
+    return {
+      startMessage: '',
+      conditionalBlocks: [],
+    };
   }
 
   // get empty conditional block with auto increment maxCondditionalId
-  private get emptyConditionalBlock(): IConditionalBlock {
+  private getEmptyConditionalBlock(finalMessage: string): IConditionalBlock {
     const emptyBlock = {
       id: ++this.maxConditionalId,
       if: this.emptyConditionalOperatorObj,
       then: this.emptyConditionalOperatorObj,
       else: this.emptyConditionalOperatorObj,
+      finalMessage: finalMessage,
     };
 
     // set block into storage
@@ -327,7 +393,10 @@ class TemplateService extends ObserverService {
 
   // get empty conditional operator
   private get emptyConditionalOperatorObj(): IConditionalOperatorObj {
-    return { firstText: '', secondText: '', conditionalBlocks: [] };
+    return {
+      startMessage: '',
+      conditionalBlocks: [],
+    };
   }
 
   private get maxStorageConditionalId(): number {

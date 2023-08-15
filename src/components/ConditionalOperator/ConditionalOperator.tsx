@@ -26,50 +26,35 @@ export function ConditionalOperator({
   parentId,
   parentOperator,
 }: IConditionalOperatorProps) {
-  const [firstValue, setFirstValue] = useState(conditionalOperator.firstText);
-  const [secondValue, setSecondValue] = useState(conditionalOperator.secondText);
+  const [startMessage, setStartMessage] = useState(conditionalOperator.startMessage);
 
-  const { conditionalBlocks } = conditionalOperator;
-  // if has conditional blocks, then render textarea with secondValue
-  const withConditionalBlock = !!conditionalBlocks.length;
   const isIfOperator = operator === 'if';
 
   useLayoutEffect(() => {
-    // set first and second value from template when appears and disappears conditional blocks in operator
-    // cause after adding or removing, may be that firstText will be cut out for second text
-    setFirstValue(conditionalOperator.firstText);
-    setSecondValue(conditionalOperator.secondText);
-  }, [!!conditionalOperator.conditionalBlocks.length]);
+    // may be, that startMessage is sliced, or will be connected
+    setStartMessage(conditionalOperator.startMessage);
+  }, [conditionalOperator.conditionalBlocks.length]);
 
-  const handleFirstChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // after change input, set value from input to conditional operator and setFirstValue
+  const handleChangeStartMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // after change input, set value from input to conditional operator and setStartMessage
     const value = e.target.value;
-    conditionalOperator.firstText = value;
-    setFirstValue(value);
+    setStartMessage(value);
     // user update teplate and not saved
     setChangesNotSaved();
-  };
-
-  const handleSecondChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // after change input, set value from input to conditional operator and setFirstValue
-    const value = e.target.value;
-    conditionalOperator.secondText = value;
-    setSecondValue(value);
-    // user update teplate and not saved
-    setChangesNotSaved();
+    conditionalOperator.startMessage = value;
   };
 
   const handleClickDeleteButton = () => {
     // if parent does not exist, then delete block in first arr conditional blocks
     if (parentId === undefined || !parentOperator) {
-      templateService.deleteConditionalBlock(id);
-      setChangesNotSaved();
+      const isSuccesDelete = templateService.deleteConditionalBlock(id);
+      if (isSuccesDelete) setChangesNotSaved();
       return;
     }
 
     // else insert parentInfo
-    templateService.deleteConditionalBlock(id, { id: parentId, operator: parentOperator });
-    setChangesNotSaved();
+    const isSuccesDelete = templateService.deleteConditionalBlock(id, { id: parentId, operator: parentOperator });
+    if (isSuccesDelete) setChangesNotSaved();
   };
 
   return (
@@ -85,30 +70,21 @@ export function ConditionalOperator({
       </div>
       <div className={styles.conditionalInputWrap}>
         <TextArea
-          value={firstValue}
-          onChange={handleFirstChange}
+          value={startMessage}
+          onChange={handleChangeStartMessage}
           onFocusInput={onFocusInput}
           className={styles.conditionalInput}
           data-id={id}
           data-operator={operator}
+          data-start-message
         />
         <ConditionalBlockList
-          conditionalBlocks={conditionalBlocks}
+          conditionalBlocks={conditionalOperator.conditionalBlocks}
           onFocusInput={onFocusInput}
           setChangesNotSaved={setChangesNotSaved}
           parentId={id}
           parentOperator={operator}
         />
-        {withConditionalBlock && (
-          <TextArea
-            value={secondValue}
-            onChange={handleSecondChange}
-            onFocusInput={onFocusInput}
-            className={styles.conditionalInput}
-            data-id={id}
-            data-operator={operator}
-          />
-        )}
       </div>
     </div>
   );

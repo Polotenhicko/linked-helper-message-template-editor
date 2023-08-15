@@ -30,6 +30,7 @@ export function ConditionalBlockList({
           setChangesNotSaved={setChangesNotSaved}
           parentId={parentId}
           parentOperator={parentOperator}
+          arrConditionalBlocks={conditionalBlocks}
         />
       ))}
     </div>

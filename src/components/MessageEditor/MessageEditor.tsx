@@ -12,7 +12,6 @@ import { ConditionalBlockList } from '../ConditionalBlockList';
 import { CloseDialog } from '../CloseDialog';
 import { MessagePreview } from '../MessagePreview';
 import { StartMessage } from '../StartMessage';
-import { FinalMessage } from '../FinalMessage';
 
 interface IMessageEditorProps {
   arrVarNames: TArrVarNames;
@@ -158,11 +157,6 @@ export function MessageEditor({ onClose, arrVarNames, template: sample, callback
           <ConditionalBlockList
             onFocusInput={setLastFocusedInput}
             conditionalBlocks={template.conditionalBlocks}
-            setChangesNotSaved={setChangesNotSaved}
-          />
-          <FinalMessage
-            onFocusInput={setLastFocusedInput}
-            template={template}
             setChangesNotSaved={setChangesNotSaved}
           />
           <ActionPanel
