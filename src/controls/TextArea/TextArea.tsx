@@ -53,11 +53,19 @@ export function TextArea({
   });
 
   // set lastFocused input to current element
-  const handleOnFocus = () => {
+  const handleOnFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (!onFocusInput) return;
     if (!ref || !ref.current) return;
 
     onFocusInput(ref.current);
+    // set dataset cursor position to 0
+    // so there will be a division at the cursor
+    e.target.dataset.cursorPosition = '0';
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    // remember where the cursor was
+    e.target.dataset.cursorPosition = String(e.target.selectionStart);
   };
 
   return (
@@ -67,6 +75,7 @@ export function TextArea({
       onKeyDown={onKeyDown}
       ref={ref}
       onFocus={handleOnFocus}
+      onBlur={handleBlur}
       {...other}
     ></textarea>
   );

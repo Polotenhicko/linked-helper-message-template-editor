@@ -1,4 +1,3 @@
-import { ConditionalBlock } from '../components/ConditionalBlock';
 import { LOCAL_STORAGE_TEMPLATE_KEY } from '../constants/localStorage';
 import { getDataset } from '../utils/getDataset';
 import { isNumber, isObject, isString } from '../utils/validators';
@@ -129,16 +128,13 @@ class TemplateService extends ObserverService {
     const isStartMessage = !!getDataset(input, 'startMessage');
     const isFinalMessage = !!getDataset(input, 'finalMessage');
 
-    const cursorPosition = input.selectionStart;
-
     const id: number | null = getDataset(input, 'id') ? Number(getDataset(input, 'id')) : null;
     const operator: string | null = getDataset(input, 'operator');
 
     if (isStartMessage) {
       if (id === null || !operator) {
         // dont have id or operator, then is template.startMessage
-
-        this.addTextToStartMessage(cursorPosition, template);
+        this.addTextToStartMessage(input, template);
 
         this.notify();
         return true;
@@ -158,7 +154,7 @@ class TemplateService extends ObserverService {
 
       const currentConditionalOperatorObj = currentConditionalBlock[operator];
 
-      this.addTextToStartMessage(cursorPosition, currentConditionalOperatorObj);
+      this.addTextToStartMessage(input, currentConditionalOperatorObj);
 
       this.notify();
       return true;
@@ -181,7 +177,7 @@ class TemplateService extends ObserverService {
           return false;
         }
 
-        this.addTextToFinalMessage(cursorPosition, currentIndex, template.conditionalBlocks);
+        this.addTextToFinalMessage(input, currentIndex, template.conditionalBlocks);
 
         this.notify();
         return true;
@@ -210,7 +206,7 @@ class TemplateService extends ObserverService {
         return false;
       }
 
-      this.addTextToFinalMessage(cursorPosition, currentIndex, conditionalParentOperatorObj.conditionalBlocks);
+      this.addTextToFinalMessage(input, currentIndex, conditionalParentOperatorObj.conditionalBlocks);
 
       this.notify();
       return true;
@@ -251,7 +247,17 @@ class TemplateService extends ObserverService {
     }
   }
 
-  private addTextToStartMessage(cursorPosition: number, obj: ITemplate | IConditionalOperatorObj) {
+  private addTextToStartMessage(input: HTMLTextAreaElement, obj: ITemplate | IConditionalOperatorObj) {
+    const dataCursorPosition = getDataset(input, 'cursorPosition');
+    // if data cursorPosition is null, then do not split text
+    // if 0, then split by user cursor position
+    // else by value
+    const cursorPosition =
+      dataCursorPosition === null
+        ? obj.startMessage.length
+        : dataCursorPosition === '0'
+        ? input.selectionStart
+        : Number(dataCursorPosition);
     const textAfterCursor = obj.startMessage.slice(cursorPosition);
     // set text after cursor to finalMessage in new conditional block
     // and text before cursor to startMessage
@@ -260,11 +266,22 @@ class TemplateService extends ObserverService {
   }
 
   private addTextToFinalMessage(
-    cursorPosition: number,
+    input: HTMLTextAreaElement,
     currentIndex: number,
     conditionalBlocks: IConditionalBlock[]
   ) {
+    const dataCursorPosition = getDataset(input, 'cursorPosition');
     const condtionalBlock = conditionalBlocks[currentIndex];
+    // if data cursorPosition is null, then do not split text
+    // if 0, then split by user cursor position
+    // else by value
+    const cursorPosition =
+      dataCursorPosition === null
+        ? condtionalBlock.finalMessage.length
+        : dataCursorPosition === '0'
+        ? input.selectionStart
+        : Number(dataCursorPosition);
+
     const textAfterCursor = condtionalBlock.finalMessage.slice(cursorPosition);
     // set finalMessage to text before cursor
     // and put empty conditional block after current index
