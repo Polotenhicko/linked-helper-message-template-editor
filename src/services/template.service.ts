@@ -1,4 +1,5 @@
 import { LOCAL_STORAGE_TEMPLATE_KEY } from '../constants/localStorage';
+import { DEFAULT_TEMPLATE } from '../constants/template';
 import { getDataset } from '../utils/getDataset';
 import { isNumber, isObject, isString } from '../utils/validators';
 import localStorageService from './localStorage.service';
@@ -40,7 +41,7 @@ class TemplateService extends ObserverService {
 
       // clear storage, since after checking the model, the storage is clogged
       this.conditionalBlocksStorage.clear();
-      this.template = this.emptyTemplate;
+      this.template = this.defaultTemplate;
       this.saveTemplate();
 
       return this.emptyTemplate;
@@ -423,6 +424,10 @@ class TemplateService extends ObserverService {
     const max = Math.max(...ids);
 
     return isNumber(max) ? max : this.maxConditionalId;
+  }
+
+  private get defaultTemplate(): ITemplate {
+    return DEFAULT_TEMPLATE;
   }
 }
 
